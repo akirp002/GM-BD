@@ -1,0 +1,727 @@
+{%- macro item(h) -%}
+<article class="item{% if h.is_daily %} is-daily{% endif %}" data-text="{{ h.filter_text }}">
+  <div class="item-meta">
+    <span class="src">{{ h.source or 'Unattributed' }}</span>
+    <time datetime="{{ h.published_utc or '' }}" title="{{ h.published_pt or 'No timestamp in feed' }}"{% if h.is_fresh %} class="fresh"{% endif %}>{{ h.age_label }}</time>
+  </div>
+  <h4>{% if h.link %}<a href="{{ h.link }}" target="_blank" rel="noopener noreferrer">{{ h.title }}</a>{% else %}{{ h.title }}{% endif %}</h4>
+  {% if h.summary %}<p>{{ h.summary }}</p>{% endif %}
+</article>
+{%- endmacro -%}
+
+{%- macro group_block(group) -%}
+<div class="grp" id="grp-{{ group.id }}">
+  <div class="grp-head">
+    <h3>{{ group.label }}</h3>
+    <span class="n"><span data-count-grp>{{ group.count }}</span> stories</span>
+    {% if group.newest %}<span class="newest">latest {{ group.newest }}</span>{% endif %}
+  </div>
+  <div class="items">
+    {% for h in group.headlines %}{{ item(h) }}{% endfor %}
+  </div>
+</div>
+{%- endmacro -%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ meta.title }}</title>
+<meta name="description" content="{{ meta.description }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --bg:#0d1117; --bg-raised:#141a23; --bg-inset:#0a0e13;
+    --line:#232b36; --line-soft:#1a212b;
+    --ink:#e8e9ea; --ink-soft:#9aa4b2; --ink-faint:#5e6773;
+    --accent:#d1a054; --accent-soft:#a97f3f;
+    --up:#4fae7d; --down:#e0665a;
+    --neutral-chip:#2b3542;
+    --serif:'Source Serif 4', Georgia, 'Times New Roman', serif;
+    --mono:'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans:'Inter', -apple-system, 'Segoe UI', sans-serif;
+    --hdr:118px;
+  }
+  :root[data-theme="light"]{
+    --bg:#f7f6f2; --bg-raised:#ffffff; --bg-inset:#efeee8;
+    --line:#ded9cc; --line-soft:#e8e4d9;
+    --ink:#221f1a; --ink-soft:#5c574c; --ink-faint:#8b8575;
+    --accent:#a9721f; --accent-soft:#8a5c16;
+    --up:#1c7a4d; --down:#b8382d;
+    --neutral-chip:#e6e1d3;
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#f7f6f2; --bg-raised:#ffffff; --bg-inset:#efeee8;
+      --line:#ded9cc; --line-soft:#e8e4d9;
+      --ink:#221f1a; --ink-soft:#5c574c; --ink-faint:#8b8575;
+      --accent:#a9721f; --accent-soft:#8a5c16;
+      --up:#1c7a4d; --down:#b8382d;
+      --neutral-chip:#e6e1d3;
+    }
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;}
+
+  /* ---------- sticky masthead ---------- */
+  .masthead{
+    position:sticky;top:0;z-index:50;background:var(--bg);
+    border-bottom:1px solid var(--line);
+  }
+  .masthead-inner{max-width:1320px;margin:0 auto;padding:12px 20px 0;}
+  .mh-row1{display:flex;flex-wrap:wrap;align-items:baseline;gap:12px 18px;}
+  .mh-title{font-family:var(--serif);font-size:clamp(20px,2.6vw,27px);font-weight:600;margin:0;letter-spacing:-.01em;}
+  .mh-stamp{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);letter-spacing:.04em;}
+  .mh-stamp b{color:var(--accent);font-weight:600;}
+  .mh-spacer{flex:1}
+  .mh-row2{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:10px 0 12px;}
+
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;}
+  .seg button{
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;
+    background:transparent;color:var(--ink-soft);border:0;padding:7px 14px;cursor:pointer;
+  }
+  .seg button + button{border-left:1px solid var(--line);}
+  .seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg);font-weight:600;}
+  .seg button:hover:not([aria-pressed="true"]){color:var(--ink);background:var(--bg-inset);}
+
+  .search{flex:1;min-width:190px;max-width:420px;position:relative;}
+  .search input{
+    width:100%;background:var(--bg-inset);border:1px solid var(--line);border-radius:6px;
+    color:var(--ink);font-family:var(--sans);font-size:13px;padding:7px 30px 7px 11px;
+  }
+  .search input:focus{outline:none;border-color:var(--accent);}
+  .search kbd{
+    position:absolute;right:8px;top:50%;transform:translateY(-50%);
+    font-family:var(--mono);font-size:10px;color:var(--ink-faint);border:1px solid var(--line);
+    border-radius:3px;padding:1px 4px;pointer-events:none;
+  }
+  .ghost{
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;
+    background:transparent;border:1px solid var(--line);border-radius:6px;color:var(--ink-soft);
+    padding:7px 12px;cursor:pointer;
+  }
+  .ghost:hover{color:var(--accent);border-color:var(--accent-soft);}
+  .livecount{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);white-space:nowrap;}
+  .livecount b{color:var(--ink);font-weight:600;}
+
+  /* ---------- layout ---------- */
+  .shell{max-width:1320px;margin:0 auto;padding:22px 20px 90px;display:grid;grid-template-columns:238px 1fr;gap:30px;}
+  @media (max-width:1000px){ .shell{grid-template-columns:1fr;gap:18px;} }
+
+  .rail{position:sticky;top:calc(var(--hdr) + 14px);align-self:start;max-height:calc(100vh - var(--hdr) - 34px);overflow-y:auto;padding-right:6px;}
+  @media (max-width:1000px){
+    .rail{position:static;max-height:none;border:1px solid var(--line-soft);border-radius:6px;background:var(--bg-inset);padding:12px 14px;}
+  }
+  .rail h5{
+    font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-faint);margin:16px 0 7px;
+  }
+  .rail h5:first-child{margin-top:0;}
+  .rail a{
+    display:flex;justify-content:space-between;gap:8px;align-items:baseline;
+    color:var(--ink-soft);text-decoration:none;font-size:13px;padding:4px 8px;
+    border-left:2px solid transparent;border-radius:0 4px 4px 0;
+  }
+  .rail a:hover{color:var(--ink);background:var(--bg-inset);}
+  .rail a.active{color:var(--accent);border-left-color:var(--accent);background:var(--bg-inset);font-weight:600;}
+  .rail a .n{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);}
+  .rail a.active .n{color:var(--accent-soft);}
+  .rail .sub a{font-size:12.4px;padding-left:14px;}
+
+  /* ---------- sections ---------- */
+  section{margin-bottom:40px;scroll-margin-top:calc(var(--hdr) + 12px);}
+  h2.sec{
+    font-family:var(--sans);font-weight:600;font-size:11.5px;text-transform:uppercase;
+    letter-spacing:.12em;color:var(--ink-faint);margin:0 0 6px;
+    padding-bottom:10px;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:10px;
+  }
+  h2.sec .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex:none;}
+  h2.sec .n{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--ink-faint);}
+  .sec-intro{color:var(--ink-soft);font-size:13.4px;margin:10px 0 16px;max-width:82ch;}
+
+  .grp{margin-bottom:26px;scroll-margin-top:calc(var(--hdr) + 12px);}
+  .grp-head{display:flex;align-items:baseline;gap:10px;margin:0 0 9px;padding-bottom:6px;border-bottom:1px solid var(--line-soft);}
+  .grp-head h3{font-family:var(--serif);font-size:16.5px;font-weight:600;margin:0;}
+  .grp-head .n{font-family:var(--mono);font-size:11px;color:var(--ink-faint);}
+  .grp-head .newest{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);}
+  .grp-origins{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);margin:-4px 0 10px;word-break:break-word;}
+
+  .items{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1px;background:var(--line-soft);border:1px solid var(--line-soft);border-radius:5px;overflow:hidden;}
+  .item{background:var(--bg-raised);padding:12px 14px 13px;display:flex;flex-direction:column;gap:5px;}
+  .item:hover{background:var(--bg-inset);}
+  .item-meta{display:flex;align-items:baseline;gap:8px;font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);}
+  .item-meta .src{color:var(--accent-soft);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%;}
+  .item-meta time{margin-left:auto;white-space:nowrap;}
+  .item-meta .fresh{color:var(--up);}
+  .item h4{margin:0;font-family:var(--serif);font-size:14.8px;font-weight:600;line-height:1.32;}
+  .item h4 a{color:var(--ink);text-decoration:none;}
+  .item h4 a:hover{color:var(--accent);text-decoration:underline;}
+  .item p{
+    margin:0;color:var(--ink-soft);font-size:12.6px;line-height:1.45;
+    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+  }
+
+  .empty{color:var(--ink-faint);font-size:13px;font-style:italic;padding:10px 0;}
+
+  /* researched stories + computed analysis */
+  .story{background:var(--bg-raised);border:1px solid var(--line);border-radius:6px;padding:18px 20px;margin-bottom:14px;}
+  .story-head{display:flex;gap:13px;align-items:flex-start;}
+  .story-num{font-family:var(--mono);font-size:11.5px;color:var(--accent);letter-spacing:.1em;padding-top:5px;flex:none;}
+  .story-head h3{font-family:var(--serif);font-size:19.5px;font-weight:600;margin:0;line-height:1.25;}
+  .story-theme{display:inline-block;margin-top:6px;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-faint);border:1px solid var(--line);border-radius:3px;padding:2px 7px;}
+  .story-deck{color:var(--ink-soft);font-size:14px;margin:11px 0 0;}
+  .story-details{margin:14px 0 0;padding-left:17px;color:var(--ink-soft);font-size:13.2px;line-height:1.6;}
+  .story-details li{margin-bottom:8px;}
+  .story-h4{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);
+    margin:0 0 8px;padding-bottom:5px;border-bottom:1px solid var(--line-soft);}
+  .story-cols{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;margin-top:18px;}
+  @media (max-width:860px){.story-cols{grid-template-columns:1fr;gap:16px;}}
+  .story-timeline{margin:0;padding:0;list-style:none;}
+  .story-timeline li{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--line-soft);font-size:12.8px;}
+  .story-timeline li:last-child{border-bottom:none;}
+  .tl-when{font-family:var(--mono);font-size:10px;color:var(--accent-soft);white-space:nowrap;flex:none;min-width:88px;padding-top:2px;}
+  .tl-what{color:var(--ink-soft);line-height:1.5;}
+  .tl-src{font-family:var(--mono);font-size:9.5px;color:var(--ink-faint);margin-left:5px;}
+  .tl-src a{color:var(--ink-faint);}
+  .story-quote{margin:0 0 11px;padding:9px 12px 9px 13px;border-left:2px solid var(--accent-soft);
+    background:var(--bg-inset);border-radius:0 4px 4px 0;}
+  .story-quote p{margin:0;font-family:var(--serif);font-size:13.4px;font-style:italic;line-height:1.5;color:var(--ink);}
+  .story-quote footer{margin-top:6px;font-size:11.8px;color:var(--ink-soft);}
+  .story-quote footer b{color:var(--accent);font-weight:600;}
+  .q-when{display:block;font-family:var(--mono);font-size:9.5px;color:var(--ink-faint);margin-top:3px;}
+  .q-when a{color:var(--ink-faint);}
+  .story-flag{margin-top:14px;padding:8px 11px;background:var(--bg-inset);border:1px solid var(--line);
+    border-left:2px solid var(--down);border-radius:0 4px 4px 0;font-size:12.2px;color:var(--ink-soft);line-height:1.5;}
+  .story-flag b{color:var(--down);}
+  .story-read{margin-top:13px;padding:9px 12px;background:var(--bg-inset);border-left:2px solid var(--accent);
+    border-radius:0 4px 4px 0;font-size:12.6px;color:var(--ink-soft);font-style:italic;}
+  .story-sources{margin-top:13px;}
+  .story-sources > summary{cursor:pointer;font-family:var(--mono);font-size:10px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--ink-faint);list-style:none;}
+  .story-sources > summary::-webkit-details-marker{display:none}
+  .story-sources > summary::before{content:'▸ ';color:var(--accent);}
+  .story-sources[open] > summary::before{content:'▾ ';}
+  .story-sources ul{margin:8px 0 0;padding-left:16px;font-size:12px;color:var(--ink-soft);line-height:1.58;}
+  .src-when{font-family:var(--mono);font-size:9.5px;color:var(--ink-faint);margin-left:6px;}
+  .src-note{font-size:10.5px;color:var(--ink-faint);font-style:italic;margin-left:6px;}
+
+  .an-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:16px;}
+  .an-card{background:var(--bg-raised);border:1px solid var(--line);border-radius:5px;padding:14px 16px;}
+  .an-card h4{margin:0 0 4px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);}
+  .an-card .cap{font-size:11.5px;color:var(--ink-faint);margin:0 0 11px;line-height:1.45;}
+  .an-bar{display:flex;align-items:center;gap:9px;margin-bottom:7px;font-size:12.5px;}
+  .an-bar .lbl{flex:1;color:var(--ink-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .an-bar .track{width:66px;height:7px;background:var(--bg-inset);border-radius:4px;overflow:hidden;flex:none;}
+  .an-bar .fill{height:100%;background:var(--accent);border-radius:4px;}
+  .an-bar .v{font-family:var(--mono);font-size:10.5px;width:66px;text-align:right;flex:none;color:var(--ink-faint);}
+  .an-bar .v b{color:var(--ink);font-weight:600;}
+  .an-corr{border-bottom:1px solid var(--line-soft);padding:9px 0;}
+  .an-corr:last-child{border-bottom:none;}
+  .an-corr .t{font-family:var(--serif);font-size:13.2px;font-weight:600;line-height:1.3;}
+  .an-corr .t a{color:var(--ink);text-decoration:none;}
+  .an-corr .t a:hover{color:var(--accent);}
+  .an-corr .o{font-family:var(--mono);font-size:9.5px;color:var(--ink-faint);margin-top:4px;line-height:1.5;}
+  .an-corr .n{color:var(--up);font-weight:600;}
+
+  /* ---------- week in review ---------- */
+  .day{border:1px solid var(--line);border-radius:5px;margin-bottom:12px;overflow:hidden;background:var(--bg-raised);}
+  .day > summary{
+    cursor:pointer;padding:11px 15px;display:flex;align-items:baseline;gap:12px;
+    font-family:var(--sans);font-weight:600;font-size:14px;list-style:none;
+  }
+  .day > summary::-webkit-details-marker{display:none}
+  .day > summary::before{content:'▸';color:var(--accent);font-size:11px;}
+  .day[open] > summary::before{content:'▾';}
+  .day > summary .n{font-family:var(--mono);font-size:11px;color:var(--ink-faint);}
+  .day > summary .srcs{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:46%;}
+  .day-body{padding:0 12px 12px;}
+
+  /* ---------- ledger ---------- */
+  .ledger{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;}
+  .ledger-card{background:var(--bg-raised);border:1px solid var(--line);border-radius:5px;padding:14px 16px;}
+  .ledger-card h4{margin:0 0 10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-faint);}
+  .bar{display:flex;align-items:center;gap:9px;margin-bottom:5px;font-size:12.5px;}
+  .bar .lbl{flex:1;color:var(--ink-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .bar .track{width:72px;height:5px;background:var(--bg-inset);border-radius:3px;overflow:hidden;flex:none;}
+  .bar .fill{height:100%;background:var(--accent-soft);}
+  .bar .v{font-family:var(--mono);font-size:11px;color:var(--ink-faint);width:26px;text-align:right;flex:none;}
+  .errlist{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);margin:0;padding-left:16px;}
+
+  .foot{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:11px;color:var(--ink-faint);line-height:1.7;}
+  .foot code{color:var(--ink-soft);}
+
+  .totop{
+    position:fixed;right:18px;bottom:18px;z-index:40;background:var(--bg-raised);
+    border:1px solid var(--line);border-radius:6px;color:var(--ink-soft);cursor:pointer;
+    font-family:var(--mono);font-size:11px;padding:8px 11px;opacity:0;pointer-events:none;transition:opacity .18s;
+  }
+  .totop.show{opacity:1;pointer-events:auto;}
+  .totop:hover{color:var(--accent);border-color:var(--accent-soft);}
+
+  /* daily/weekly filtering + search filtering */
+  body[data-mode="daily"] .item:not(.is-daily){display:none;}
+  body[data-mode="daily"] .weekly-only{display:none;}
+  .item.hidden, .grp.hidden, section.hidden, .day.hidden{display:none;}
+</style>
+</head>
+<body data-mode="daily">
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="mh-row1">
+      <h1 class="mh-title">{{ meta.title }}</h1>
+      <div class="mh-spacer"></div>
+      <div class="mh-stamp">Pulled <b>{{ meta.generated_at_pt }}</b></div>
+    </div>
+    <div class="mh-row2">
+      <div class="seg" role="group" aria-label="Time window">
+        <button type="button" id="mode-daily" aria-pressed="true">Daily &middot; {{ meta.daily_window }}h</button>
+        <button type="button" id="mode-weekly" aria-pressed="false">Weekly &middot; {{ meta.weekly_window // 24 }}d</button>
+      </div>
+      <div class="search">
+        <input type="search" id="q" placeholder="Filter headlines and sources..." autocomplete="off" aria-label="Filter headlines">
+        <kbd>/</kbd>
+      </div>
+      <span class="livecount"><b id="shown">0</b> of <b id="total">{{ meta.weekly_total }}</b> stories</span>
+      <button type="button" class="ghost" id="expand">Expand all days</button>
+      <button type="button" class="ghost" id="theme">Theme</button>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+
+  <nav class="rail" id="rail">
+    <h5>Reading</h5>
+    <a href="#frontpage" data-spy="frontpage">Front page <span class="n" data-count="frontpage"></span></a>
+    {% if top_stories %}<a href="#stories" data-spy="stories">Today's stories</a>{% endif %}
+    {% if analysis %}<a href="#analysis" data-spy="analysis">Analysis</a>{% endif %}
+    <a href="#premium" data-spy="premium">Premium desks <span class="n" data-count="premium"></span></a>
+    <a href="#wires" data-spy="wires">Newsroom wires <span class="n" data-count="wires"></span></a>
+    <a href="#primary" data-spy="primary">Primary sources <span class="n" data-count="primary"></span></a>
+    <a href="#weekinreview" data-spy="weekinreview" class="weekly-only">Week in review <span class="n" data-count="weekinreview"></span></a>
+    <a href="#ledger" data-spy="ledger">Source ledger</a>
+
+    <h5>Topics</h5>
+    <div class="sub">
+      {% for group in topics %}
+      <a href="#{{ group.id }}" data-spy="{{ group.id }}">{{ group.label }} <span class="n" data-count="{{ group.id }}"></span></a>
+      {% endfor %}
+    </div>
+  </nav>
+
+  <main>
+
+    <section id="frontpage" data-derived>
+      <h2 class="sec"><span class="dot"></span>Front page <span class="n" data-count-for="frontpage"></span></h2>
+      <p class="sec-intro">{{ meta.frontpage_intro }}</p>
+      <div class="items">
+        {% for h in frontpage %}{{ item(h) }}{% endfor %}
+      </div>
+    </section>
+
+    {% if top_stories %}
+    <section id="stories" data-derived>
+      <h2 class="sec"><span class="dot"></span>Today's stories, with the detail underneath</h2>
+      <p class="sec-intro">The researched write-up behind the headlines: what actually happened, a dated
+        timeline, and named quotes carrying the date each was said. Every claim here can be placed in time;
+        anything whose date could not be established says so rather than guessing.</p>
+      {% for s in top_stories %}
+      <article class="story">
+        <div class="story-head">
+          <span class="story-num">{{ s.num }}</span>
+          <div>
+            <h3>{{ s.title }}</h3>
+            {% if s.playbook_label %}<span class="story-theme">{{ s.playbook_label }}</span>{% endif %}
+          </div>
+        </div>
+        <p class="story-deck">{{ s.body }}</p>
+        {% if s.details %}
+        <ul class="story-details">
+          {% for d in s.details %}<li>{{ d }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+        <div class="story-cols">
+          {% if s.timeline %}
+          <div>
+            <h4 class="story-h4">Timeline</h4>
+            <ol class="story-timeline">
+              {% for t in s.timeline %}
+              <li>
+                <span class="tl-when">{{ t.date }}{% if t.time %} &middot; {{ t.time }}{% endif %}</span>
+                <span class="tl-what">{{ t.event }}
+                  {% if t.source %}<span class="tl-src">{% if t.url %}<a href="{{ t.url }}" target="_blank" rel="noopener noreferrer">{{ t.source }}</a>{% else %}{{ t.source }}{% endif %}</span>{% endif %}
+                </span>
+              </li>
+              {% endfor %}
+            </ol>
+          </div>
+          {% endif %}
+          {% if s.quotes %}
+          <div>
+            <h4 class="story-h4">Said on the record</h4>
+            {% for q in s.quotes %}
+            <blockquote class="story-quote">
+              <p>&ldquo;{{ q.text }}&rdquo;</p>
+              <footer><b>{{ q.name }}</b>{% if q.title %}, {{ q.title }}{% endif %}
+                <span class="q-when">{% if q.said_on %}said {{ q.said_on }}{% else %}date not established{% endif %}{% if q.source_label %} &middot; {% if q.url %}<a href="{{ q.url }}" target="_blank" rel="noopener noreferrer">{{ q.source_label }}</a>{% else %}{{ q.source_label }}{% endif %}{% endif %}</span>
+              </footer>
+            </blockquote>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+        {% if s.disagreement %}<div class="story-flag"><b>Sources disagree:</b> {{ s.disagreement }}</div>{% endif %}
+        {% if s.read %}<div class="story-read">{{ s.read }}</div>{% endif %}
+        {% if s.sources %}
+        <details class="story-sources">
+          <summary>{{ s.sources | length }} sources, with publication dates</summary>
+          <ul>
+            {% for src in s.sources %}
+            <li>{% if src.url %}<a href="{{ src.url }}" target="_blank" rel="noopener noreferrer">{{ src.label }}</a>{% else %}{{ src.label }}{% endif %}
+              <span class="src-when">{{ src.published or 'undated' }}</span>
+              {% if src.note %}<span class="src-note">{{ src.note }}</span>{% endif %}</li>
+            {% endfor %}
+          </ul>
+        </details>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </section>
+    {% endif %}
+
+    {% if analysis %}
+    <section id="analysis" data-derived>
+      <h2 class="sec"><span class="dot"></span>Analysis &mdash; computed from the corpus</h2>
+      <p class="sec-intro">Three readings derived in Python from the headlines themselves, so they refresh with
+        the data. These are claims about <i>coverage</i>, not about markets &mdash; attention, not price.</p>
+      <div class="an-cols">
+        <div class="an-card">
+          <h4>Attention shift &mdash; today vs. a normal day</h4>
+          <p class="cap">Today's count against the <b>median</b> of that topic's own prior days. Median, prior
+            days only: a full-window mean includes today and spans a weekend, which makes every weekday look
+            like a surge.</p>
+          {% for row in analysis.attention %}
+          <div class="an-bar">
+            <span class="lbl">{{ row.label }}</span>
+            <span class="track"><span class="fill" style="width:{{ row.pct }}%"></span></span>
+            <span class="v"><b>{{ row.ratio }}&times;</b> {{ row.today }}/{{ row.baseline_per_day }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="an-card">
+          <h4>Corroboration &mdash; distinct outlets per story</h4>
+          <p class="cap">"Count independent sources, not articles," applied mechanically: clustered by shared
+            vocabulary, counted by outlet. A floor, not proof &mdash; syndication means several outlets can
+            still be one wire.</p>
+          {% for row in analysis.corroboration %}
+          <div class="an-corr">
+            <div class="t">{% if row.link %}<a href="{{ row.link }}" target="_blank" rel="noopener noreferrer">{{ row.title }}</a>{% else %}{{ row.title }}{% endif %}</div>
+            <div class="o"><span class="n">{{ row.outlet_count }} outlets</span> &middot; {{ row.article_count }} articles
+              &middot; first seen {{ row.lead_published_pt or row.lead_age }}<br>{{ row.outlets | join(' · ') }}</div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="an-card">
+          <h4>Playbook exposure &mdash; volume by theme</h4>
+          <p class="cap">Topic volume mapped onto the playbook's six structural themes. Share is of today's
+            topic-desk total.</p>
+          {% for row in analysis.playbook %}
+          <div class="an-bar">
+            <span class="lbl">{{ row.label }}</span>
+            <span class="track"><span class="fill" style="width:{{ row.pct }}%"></span></span>
+            <span class="v"><b>{{ row.today }}</b> / {{ row.week }}wk</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+    {% endif %}
+
+    <section id="premium">
+      <h2 class="sec"><span class="dot"></span>Premium desks <span class="n" data-count-for="premium"></span></h2>
+      <p class="sec-intro">{{ meta.premium_intro }}</p>
+      {% for group in premium %}{{ group_block(group) }}{% endfor %}
+    </section>
+
+    {% for group in topics %}
+    <section id="{{ group.id }}">
+      <h2 class="sec"><span class="dot"></span>{{ group.label }} <span class="n" data-count-for="{{ group.id }}"></span></h2>
+      <div class="grp-origins">Queries: {% for o in group.origins %}{{ o }}{% if not loop.last %} &middot; {% endif %}{% endfor %}</div>
+      <div class="items">
+        {% for h in group.headlines %}{{ item(h) }}{% endfor %}
+      </div>
+      {% if not group.headlines %}<p class="empty">Nothing in the window.</p>{% endif %}
+    </section>
+    {% endfor %}
+
+    <section id="wires">
+      <h2 class="sec"><span class="dot"></span>Newsroom wires <span class="n" data-count-for="wires"></span></h2>
+      <p class="sec-intro">{{ meta.wires_intro }}</p>
+      {% for group in wires %}{{ group_block(group) }}{% endfor %}
+    </section>
+
+    <section id="primary">
+      <h2 class="sec"><span class="dot"></span>Primary sources <span class="n" data-count-for="primary"></span></h2>
+      <p class="sec-intro">{{ meta.primary_intro }}</p>
+      {% for group in primary %}{{ group_block(group) }}{% endfor %}
+    </section>
+
+    <section id="weekinreview" class="weekly-only" data-derived>
+      <h2 class="sec"><span class="dot"></span>Week in review <span class="n" data-count-for="weekinreview"></span></h2>
+      <p class="sec-intro">{{ meta.week_intro }}</p>
+      {% for day in week_in_review %}
+      <details class="day"{% if loop.index <= 2 %} open{% endif %}>
+        <summary>{{ day.label }} <span class="n">{{ day.count }} stories</span>
+          <span class="srcs">{{ day.top_sources | join(' · ') }}</span></summary>
+        <div class="day-body">
+          <div class="items">
+            {% for h in day.headlines %}{{ item(h) }}{% endfor %}
+          </div>
+        </div>
+      </details>
+      {% endfor %}
+      {% if not week_in_review %}<p class="empty">No dated stories in the weekly window.</p>{% endif %}
+    </section>
+
+    <section id="ledger">
+      <h2 class="sec"><span class="dot"></span>Source ledger</h2>
+      <p class="sec-intro">{{ meta.ledger_intro }}</p>
+      <div class="ledger">
+        <div class="ledger-card">
+          <h4>Most-seen outlets (weekly)</h4>
+          {% for row in ledger.top_sources %}
+          <div class="bar">
+            <span class="lbl">{{ row.source }}</span>
+            <span class="track"><span class="fill" style="width:{{ row.pct }}%"></span></span>
+            <span class="v">{{ row.count }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="ledger-card">
+          <h4>Busiest topics (weekly)</h4>
+          {% for row in ledger.topic_volume %}
+          <div class="bar">
+            <span class="lbl">{{ row.label }}</span>
+            <span class="track"><span class="fill" style="width:{{ row.pct }}%"></span></span>
+            <span class="v">{{ row.count }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="ledger-card">
+          <h4>Coverage &amp; failures</h4>
+          <div class="bar"><span class="lbl">Topic queries</span><span class="v">{{ ledger.counts.topic_queries }}</span></div>
+          <div class="bar"><span class="lbl">Publisher feeds</span><span class="v">{{ ledger.counts.publisher_feeds }}</span></div>
+          <div class="bar"><span class="lbl">Premium desks</span><span class="v">{{ ledger.counts.premium_desks }}</span></div>
+          <div class="bar"><span class="lbl">Distinct outlets (wk)</span><span class="v">{{ ledger.distinct_sources }}</span></div>
+          {% if ledger.fetch_errors %}
+          <h4 style="margin-top:14px">Feeds that failed this run</h4>
+          <ul class="errlist">
+            {% for e in ledger.fetch_errors %}<li>{{ e.group }} &mdash; {{ e.error }}</li>{% endfor %}
+          </ul>
+          {% else %}
+          <p class="empty" style="margin-top:10px">All feeds responded.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="foot">
+        Generated by <code>briefs/scripts/fetch_news.py</code> &rarr; <code>briefs/scripts/render_news.py</code>.
+        Raw data: <code>briefs/data/{{ meta.asof_date }}-news.json</code> (daily, {{ meta.daily_window }}h) and
+        <code>briefs/data/{{ meta.asof_date }}-news-weekly.json</code> (weekly, {{ meta.weekly_window }}h).<br>
+        Headlines are third-party text rendered as escaped plain text. Premium-desk items are paywalled at the
+        source &mdash; treat them as reading signals and confirm any number against a free source, per the brief's rules.
+        All times Pacific.
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<button type="button" class="totop" id="totop">&uarr; Top</button>
+
+<script>
+(function () {
+  var body = document.body;
+
+  // ---- daily / weekly toggle -------------------------------------------
+  // Both windows live in one DOM: every item carries .is-daily when it falls
+  // inside the daily window, so switching modes is a CSS class flip on <body>
+  // plus a recount -- no re-render, no second payload.
+  var btnDaily = document.getElementById('mode-daily');
+  var btnWeekly = document.getElementById('mode-weekly');
+
+  function setMode(mode) {
+    body.dataset.mode = mode;
+    btnDaily.setAttribute('aria-pressed', String(mode === 'daily'));
+    btnWeekly.setAttribute('aria-pressed', String(mode === 'weekly'));
+    try { localStorage.setItem('mb-news-mode', mode); } catch (e) {}
+    recount();
+  }
+  btnDaily.addEventListener('click', function () { setMode('daily'); });
+  btnWeekly.addEventListener('click', function () { setMode('weekly'); });
+
+  // ---- text filter ------------------------------------------------------
+  var q = document.getElementById('q');
+  var items = Array.prototype.slice.call(document.querySelectorAll('.item'));
+
+  function applyFilter() {
+    var term = q.value.trim().toLowerCase();
+    for (var i = 0; i < items.length; i++) {
+      var el = items[i];
+      el.classList.toggle('hidden', term !== '' && el.dataset.text.indexOf(term) === -1);
+    }
+    recount();
+  }
+  q.addEventListener('input', applyFilter);
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === '/' && document.activeElement !== q) { e.preventDefault(); q.focus(); }
+    if (e.key === 'Escape' && document.activeElement === q) { q.value = ''; applyFilter(); q.blur(); }
+  });
+
+  // ---- counts -----------------------------------------------------------
+  // One pass recomputes every visible count: per section, per topic group,
+  // per day bucket, and the masthead total. Sections and groups that end up
+  // empty under the current mode+filter hide themselves, so you never scroll
+  // past a run of empty headers.
+  function visibleIn(root) {
+    return root.querySelectorAll('.item:not(.hidden)' + (body.dataset.mode === 'daily' ? '.is-daily' : '')).length;
+  }
+
+  function recount() {
+    // Front page and Week in review re-present stories that already live in a
+    // canonical section, so they are excluded from the totals -- otherwise the
+    // "shown of total" readout counts the same story two or three times.
+    var shown = 0, total = 0;
+
+    document.querySelectorAll('section[id]').forEach(function (sec) {
+      var n = visibleIn(sec);
+      var canonical = sec.id !== 'ledger' && !sec.hasAttribute('data-derived');
+      if (canonical) {
+        shown += n;
+        total += sec.querySelectorAll('.item' + (body.dataset.mode === 'daily' ? '.is-daily' : '')).length;
+      }
+
+      sec.querySelectorAll('.grp').forEach(function (grp) {
+        var gn = visibleIn(grp);
+        grp.classList.toggle('hidden', gn === 0);
+        var badge = grp.querySelector('[data-count-grp]');
+        if (badge) { badge.textContent = gn; }
+      });
+
+      sec.querySelectorAll('.day').forEach(function (day) {
+        var dn = visibleIn(day);
+        day.classList.toggle('hidden', dn === 0);
+      });
+
+      var railBadge = document.querySelector('[data-count="' + sec.id + '"]');
+      if (railBadge) { railBadge.textContent = n; }
+      var secBadge = document.querySelector('[data-count-for="' + sec.id + '"]');
+      if (secBadge) { secBadge.textContent = n + (n === 1 ? ' story' : ' stories'); }
+
+      if (sec.id !== 'ledger') {
+        var hide = n === 0;
+        sec.classList.toggle('hidden', hide);
+        var railLink = document.querySelector('.rail a[data-spy="' + sec.id + '"]');
+        if (railLink) { railLink.style.display = hide ? 'none' : ''; }
+      }
+    });
+
+    document.getElementById('shown').textContent = shown;
+    document.getElementById('total').textContent = total;
+    // Sections may have just appeared or vanished; re-resolve what's active.
+    updateSpy();
+  }
+
+  // ---- scroll spy -------------------------------------------------------
+  // Highlights whichever section owns the top of the viewport, so the rail
+  // always answers "where am I" and every other section stays one click away.
+  //
+  // Resolved in *document* order rather than by intersection-callback order:
+  // the rail lists the reading sections before the topic list, which is not
+  // the order they appear on the page, so "first one intersecting" picks the
+  // wrong entry. Scanning top-down for the last section whose heading has
+  // crossed the trigger line is order-independent and handles hidden
+  // sections (filtered out, or weekly-only in daily mode) for free.
+  var links = {};
+  document.querySelectorAll('.rail a[data-spy]').forEach(function (a) { links[a.dataset.spy] = a; });
+  var sections = Array.prototype.slice.call(document.querySelectorAll('section[id]'));
+  var ticking = false;
+
+  function markActive(id) {
+    Object.keys(links).forEach(function (key) { links[key].classList.toggle('active', key === id); });
+  }
+
+  function updateSpy() {
+    ticking = false;
+    var line = document.querySelector('.masthead').offsetHeight + 40;
+    var current = null, firstVisible = null, lastVisible = null;
+    for (var i = 0; i < sections.length; i++) {
+      var sec = sections[i];
+      if (sec.classList.contains('hidden') || getComputedStyle(sec).display === 'none') { continue; }
+      if (firstVisible === null) { firstVisible = sec.id; }
+      lastVisible = sec.id;
+      if (sec.getBoundingClientRect().top <= line) { current = sec.id; }
+    }
+    // At the bottom of the page the final sections can never reach the trigger
+    // line -- there is no scroll left to give them -- so the rail would stay
+    // stuck on whichever section last crossed it. Resolve to the last one.
+    var atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+    markActive(atBottom ? lastVisible : (current || firstVisible));
+  }
+
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(updateSpy); }
+  }, { passive: true });
+
+  // ---- misc controls ----------------------------------------------------
+  var expand = document.getElementById('expand');
+  expand.addEventListener('click', function () {
+    var days = document.querySelectorAll('.day');
+    var anyClosed = Array.prototype.some.call(days, function (d) { return !d.open; });
+    days.forEach(function (d) { d.open = anyClosed; });
+    expand.textContent = anyClosed ? 'Collapse all days' : 'Expand all days';
+  });
+
+  document.getElementById('theme').addEventListener('click', function () {
+    var root = document.documentElement;
+    var next = root.dataset.theme === 'light' ? 'dark' : 'light';
+    root.dataset.theme = next;
+    try { localStorage.setItem('mb-news-theme', next); } catch (e) {}
+  });
+
+  var totop = document.getElementById('totop');
+  window.addEventListener('scroll', function () {
+    totop.classList.toggle('show', window.scrollY > 700);
+  }, { passive: true });
+  totop.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+  // ---- restore prefs, first paint --------------------------------------
+  try {
+    var savedTheme = localStorage.getItem('mb-news-theme');
+    if (savedTheme) { document.documentElement.dataset.theme = savedTheme; }
+    var savedMode = localStorage.getItem('mb-news-mode');
+    setMode(savedMode === 'weekly' ? 'weekly' : 'daily');
+  } catch (e) { setMode('daily'); }
+
+  // Keep the sticky-offset variable honest if the masthead wraps to two rows.
+  function syncHeaderOffset() {
+    document.documentElement.style.setProperty('--hdr', document.querySelector('.masthead').offsetHeight + 'px');
+  }
+  syncHeaderOffset();
+  window.addEventListener('resize', syncHeaderOffset, { passive: true });
+  updateSpy();
+})();
+</script>
+</body>
+</html>

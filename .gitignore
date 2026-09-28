@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# OS
+.DS_Store
+
+# Daily generated output (reproducible via the scripts in briefs/scripts/ --
+# see README. A few samples are checked into examples/ instead.)
+briefs/*.md
+briefs/*.html
+briefs/data/
+
+# Editor/tooling
+.claude/
+
+# Unrelated personal files kept locally, not part of this project
+Ajay_Kirpekar_Resume.tex
+MCVB_Filter_Derivations.pdf

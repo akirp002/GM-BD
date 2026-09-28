@@ -1,0 +1,1594 @@
+<title>{{ meta.title }}</title>
+<meta name="description" content="{{ meta.description }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --bg:#0d1117;
+    --bg-raised:#141a23;
+    --bg-inset:#0a0e13;
+    --line:#232b36;
+    --line-soft:#1a212b;
+    --ink:#e8e9ea;
+    --ink-soft:#9aa4b2;
+    --ink-faint:#5e6773;
+    --accent:#d1a054;
+    --accent-soft:#a97f3f;
+    --up:#4fae7d;
+    --down:#e0665a;
+    --neutral-chip:#2b3542;
+    --quote-bg:#171f2b;
+    --serif:'Source Serif 4', Georgia, 'Times New Roman', serif;
+    --mono:'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans:'Inter', -apple-system, 'Segoe UI', sans-serif;
+  }
+  :root[data-theme="light"]{
+    --bg:#f7f6f2;
+    --bg-raised:#ffffff;
+    --bg-inset:#efeee8;
+    --line:#ded9cc;
+    --line-soft:#e8e4d9;
+    --ink:#221f1a;
+    --ink-soft:#5c574c;
+    --ink-faint:#8b8575;
+    --accent:#a9721f;
+    --accent-soft:#8a5c16;
+    --up:#1c7a4d;
+    --down:#b8382d;
+    --neutral-chip:#e6e1d3;
+    --quote-bg:#f0ece0;
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#f7f6f2;
+      --bg-raised:#ffffff;
+      --bg-inset:#efeee8;
+      --line:#ded9cc;
+      --line-soft:#e8e4d9;
+      --ink:#221f1a;
+      --ink-soft:#5c574c;
+      --ink-faint:#8b8575;
+      --accent:#a9721f;
+      --accent-soft:#8a5c16;
+      --up:#1c7a4d;
+      --down:#b8382d;
+      --neutral-chip:#e6e1d3;
+      --quote-bg:#f0ece0;
+    }
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;}
+  .wrap{max-width:1160px;margin:0 auto;padding:28px 20px 80px;}
+
+  .masthead{
+    display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;
+    gap:16px;border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:26px;
+  }
+  .masthead-title{font-family:var(--serif);font-size:clamp(28px,4.5vw,40px);font-weight:600;letter-spacing:-0.01em;margin:0;text-wrap:balance;}
+  .masthead-sub{color:var(--ink-soft);font-size:13.5px;margin-top:6px;max-width:56ch;}
+  .masthead-date{font-family:var(--mono);font-size:12.5px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.08em;text-align:right;}
+  .masthead-date b{color:var(--accent);font-weight:600;}
+
+  /* Sticky section nav: every section stays one click away from any scroll
+     position, and the active entry tracks where you are. Horizontal rather
+     than a left rail so the wide tables and charts keep their full width. */
+  .toc{
+    position:sticky;top:0;z-index:60;display:flex;flex-wrap:nowrap;overflow-x:auto;
+    gap:2px;margin:0 -20px 30px;padding:9px 20px;background:var(--bg);
+    border-bottom:1px solid var(--line);scrollbar-width:thin;
+  }
+  .toc::-webkit-scrollbar{height:4px;}
+  .toc::-webkit-scrollbar-thumb{background:var(--line);border-radius:2px;}
+  .toc a{
+    font-family:var(--mono);font-size:11px;color:var(--ink-soft);text-decoration:none;
+    text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;padding:5px 10px;
+    border-radius:4px;border-bottom:2px solid transparent;
+  }
+  .toc a:hover{color:var(--ink);background:var(--bg-inset);}
+  .toc a.active{color:var(--accent);border-bottom-color:var(--accent);background:var(--bg-inset);font-weight:600;}
+  section{scroll-margin-top:62px;}
+  .totop{
+    position:fixed;right:18px;bottom:18px;z-index:55;background:var(--bg-raised);
+    border:1px solid var(--line);border-radius:6px;color:var(--ink-soft);cursor:pointer;
+    font-family:var(--mono);font-size:11px;padding:8px 11px;opacity:0;pointer-events:none;transition:opacity .18s;
+  }
+  .totop.show{opacity:1;pointer-events:auto;}
+  .totop:hover{color:var(--accent);border-color:var(--accent-soft);}
+
+  .top3{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:14px;border-radius:4px;overflow:hidden;}
+  @media (max-width:760px){.top3{grid-template-columns:1fr;}}
+  .top3 article{background:var(--bg-raised);padding:18px 18px 20px;}
+  .top3 .num{font-family:var(--mono);color:var(--accent);font-size:12px;letter-spacing:.1em;}
+  .top3 h3{font-family:var(--serif);font-size:17px;font-weight:600;margin:8px 0 8px;line-height:1.3;}
+  .top3 p{color:var(--ink-soft);font-size:13.5px;margin:0;}
+  .top3 .read{color:var(--ink-faint);font-size:12.5px;font-style:italic;margin-top:8px;}
+
+  .top-extra{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-top:none;border-radius:0 0 4px 4px;overflow:hidden;margin-bottom:32px;}
+  @media (max-width:760px){.top-extra{grid-template-columns:1fr;}}
+  .top-extra article{background:var(--bg-raised);padding:16px 18px;}
+  .top-extra .num{font-family:var(--mono);color:var(--ink-faint);font-size:12px;letter-spacing:.1em;}
+  .top-extra h3{font-family:var(--serif);font-size:15.5px;font-weight:600;margin:6px 0 6px;line-height:1.3;}
+  .top-extra p{color:var(--ink-soft);font-size:13px;margin:0;}
+
+  h2.sec{
+    font-family:var(--sans);font-weight:600;font-size:11.5px;text-transform:uppercase;
+    letter-spacing:.12em;color:var(--ink-faint);margin:0 0 14px;
+    padding-bottom:10px;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:10px;scroll-margin-top:16px;
+  }
+  h2.sec .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex:none;}
+  section{margin-bottom:44px;}
+  .sec-intro{color:var(--ink-soft);font-size:13.8px;margin:-4px 0 18px;max-width:80ch;}
+
+  .tbl-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:4px;}
+  table{border-collapse:collapse;width:100%;min-width:720px;font-family:var(--mono);font-size:13px;}
+  thead th{
+    text-align:left;font-family:var(--sans);font-weight:600;text-transform:uppercase;
+    font-size:10.5px;letter-spacing:.08em;color:var(--ink-faint);
+    background:var(--bg-inset);padding:10px 14px;border-bottom:1px solid var(--line);
+  }
+  tbody td{padding:10px 14px;border-bottom:1px solid var(--line-soft);white-space:nowrap;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:var(--bg-inset);}
+  td.metric{font-family:var(--sans);font-weight:600;color:var(--ink);}
+  td.lvl{font-variant-numeric:tabular-nums;font-weight:600;}
+  td.src a{color:var(--ink-faint);text-decoration:underline;text-decoration-color:var(--line);font-size:12px;}
+  td.src a:hover{color:var(--accent);}
+  .chip{display:inline-block;padding:2px 7px;border-radius:3px;font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums;}
+  .chip.up{color:var(--up);background:color-mix(in srgb, var(--up) 15%, transparent);}
+  .chip.down{color:var(--down);background:color-mix(in srgb, var(--down) 15%, transparent);}
+  .chip.flat{color:var(--ink-faint);background:var(--neutral-chip);}
+
+  .deepdive{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+  @media (max-width:760px){.deepdive{grid-template-columns:1fr;}}
+  .panel{background:var(--bg-raised);border:1px solid var(--line);border-radius:6px;padding:22px 22px 24px;}
+  .panel.full{grid-column:1/-1;}
+  .panel-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:4px;}
+  .panel-head h3{font-family:var(--serif);font-size:21px;font-weight:600;margin:0;}
+  .panel-tag{font-family:var(--mono);font-size:10.5px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;}
+  .panel-lede{color:var(--ink-soft);font-size:13.5px;margin:6px 0 16px;line-height:1.55;}
+  .stat-row{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
+  .stat{flex:1;min-width:96px;background:var(--bg-inset);border:1px solid var(--line-soft);border-radius:4px;padding:10px 12px;}
+  .stat .k{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint);}
+  .stat .v{font-family:var(--mono);font-size:17px;font-weight:600;margin-top:3px;color:var(--ink);}
+  .stat .v small{font-size:10.5px;color:var(--ink-faint);font-weight:400;}
+  .panel h4{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);margin:18px 0 8px;font-weight:600;}
+  .panel p{font-size:13.8px;color:var(--ink-soft);margin:0 0 10px;line-height:1.6;}
+  .panel p:last-child{margin-bottom:0;}
+  .panel ul{margin:0;padding-left:18px;}
+  .panel li{font-size:13.5px;color:var(--ink-soft);margin-bottom:6px;line-height:1.55;}
+  .read-line{margin-top:14px;padding:10px 12px;border-left:2px solid var(--accent);background:var(--bg-inset);font-size:13px;color:var(--ink);border-radius:0 4px 4px 0;}
+  .read-line b{color:var(--accent);font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-right:6px;}
+  .caveat{margin-top:10px;padding:9px 12px;border-left:2px solid var(--down);background:var(--bg-inset);font-size:12.5px;color:var(--ink-soft);border-radius:0 4px 4px 0;}
+  .caveat b{color:var(--down);font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;margin-right:6px;}
+
+  .curve-wrap{margin:14px 0 4px;}
+  svg.curve{width:100%;height:auto;display:block;}
+  .curve-label{font-family:var(--mono);font-size:10px;fill:var(--ink-faint);}
+  .curve-value{font-family:var(--mono);font-size:11px;fill:var(--ink);font-weight:600;}
+
+  /* quote card -- preserves attributed human analysis verbatim */
+  .quote{
+    background:var(--quote-bg);border:1px solid var(--line-soft);border-left:3px solid var(--accent);
+    border-radius:0 6px 6px 0;padding:14px 16px;margin-bottom:12px;
+  }
+  .quote:last-child{margin-bottom:0;}
+  .quote blockquote{margin:0 0 8px;font-family:var(--serif);font-size:14.5px;font-style:italic;line-height:1.5;color:var(--ink);}
+  .quote cite{font-family:var(--sans);font-style:normal;font-size:12px;color:var(--ink-faint);font-weight:600;}
+  .quote cite b{color:var(--accent);}
+
+  .playbook-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;}
+  .theme-card{background:var(--bg-raised);border:1px solid var(--line);border-radius:6px;padding:16px 16px 18px;}
+  .theme-card .status{display:inline-block;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:2px 7px;border-radius:3px;margin-bottom:9px;}
+  .status.live{color:var(--down);background:color-mix(in srgb, var(--down) 15%, transparent);}
+  .status.watch{color:var(--accent);background:color-mix(in srgb, var(--accent) 15%, transparent);}
+  .status.quiet{color:var(--ink-faint);background:var(--neutral-chip);}
+  .theme-card h4{font-family:var(--serif);font-size:15.5px;font-weight:600;margin:0 0 6px;}
+  .theme-card p{font-size:13px;color:var(--ink-soft);margin:0;line-height:1.55;}
+
+  .flat-list{list-style:none;margin:0;padding:0;}
+  .flat-list li{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--line-soft);font-size:13.7px;color:var(--ink-soft);}
+  .flat-list li:last-child{border-bottom:none;}
+  .flat-list .marker{font-family:var(--mono);color:var(--accent);flex:none;font-size:12px;padding-top:1px;}
+
+  /* central bank grid */
+  .cb-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;}
+  .cb-card{background:var(--bg-raised);border:1px solid var(--line);border-radius:6px;padding:16px 18px 18px;}
+  .cb-card .flag{font-family:var(--mono);font-size:10.5px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;}
+  .cb-card h4{font-family:var(--serif);font-size:17px;font-weight:600;margin:6px 0 8px;}
+  .cb-card .rate{font-family:var(--mono);font-size:20px;font-weight:600;margin-bottom:8px;}
+  .cb-card p{font-size:13px;color:var(--ink-soft);margin:0 0 8px;line-height:1.55;}
+  .cb-card p:last-child{margin-bottom:0;}
+
+  /* debate: two-column opposing views */
+  .debate{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media (max-width:700px){.debate{grid-template-columns:1fr;}}
+  .debate-col{border:1px solid var(--line);border-radius:6px;padding:18px 20px;background:var(--bg-raised);}
+  .debate-col.concerned{border-top:3px solid var(--down);}
+  .debate-col.cautious{border-top:3px solid var(--up);}
+  .debate-col h4{font-family:var(--sans);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-faint);margin:0 0 12px;font-weight:600;}
+
+  /* heatmap */
+  .hm-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:4px;}
+  table.hm{border-collapse:collapse;width:100%;min-width:640px;font-family:var(--mono);font-size:12.5px;}
+  table.hm thead th{text-align:center;font-family:var(--sans);font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:.07em;color:var(--ink-faint);background:var(--bg-inset);padding:9px 10px;border-bottom:1px solid var(--line);}
+  table.hm thead th:first-child, table.hm thead th:nth-child(2){text-align:left;}
+  table.hm td{padding:7px 10px;border-bottom:1px solid var(--line-soft);text-align:center;font-variant-numeric:tabular-nums;}
+  tr.hm-group td{background:var(--bg-inset);font-family:var(--sans);font-weight:600;text-transform:uppercase;font-size:10.5px;letter-spacing:.07em;color:var(--ink-faint);text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);}
+  td.hm-ticker{font-family:var(--sans);font-weight:700;color:var(--ink);text-align:left;white-space:nowrap;}
+  td.hm-label{font-family:var(--sans);color:var(--ink-soft);text-align:left;font-size:12px;white-space:nowrap;}
+  td.hm-cell{font-weight:600;color:var(--ink);}
+  .hm-legend{display:flex;align-items:center;gap:10px;margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--ink-faint);}
+  .hm-legend .swatches{display:flex;}
+  .hm-legend .sw{width:22px;height:10px;}
+  .hm-note{font-size:12px;color:var(--ink-faint);margin-top:10px;}
+
+  /* relative valuation bars */
+  .val-row{display:grid;grid-template-columns:180px 1fr 70px 84px;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--line-soft);}
+  .val-row:last-child{border-bottom:none;}
+  .val-label{font-family:var(--sans);font-size:12.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .val-label span{display:block;font-weight:400;color:var(--ink-faint);font-size:10.5px;text-transform:none;}
+  .val-bar-track{position:relative;height:16px;background:var(--bg-inset);border-radius:3px;overflow:hidden;}
+  .val-bar{position:absolute;top:0;bottom:0;}
+  .val-bar-left{right:50%;}
+  .val-bar-right{left:50%;}
+  .val-zero{position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--line);}
+  .val-pe,.val-prem{font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--ink);text-align:right;}
+  .val-pe small,.val-prem small{display:block;font-family:var(--sans);font-weight:400;font-size:9.5px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.05em;}
+  .val-legend{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);margin-top:8px;}
+
+  /* credit curve bars */
+  .cc-row{display:grid;grid-template-columns:44px 1fr 70px;align-items:center;gap:10px;padding:6px 0;}
+  .cc-label{font-family:var(--mono);font-weight:700;font-size:12.5px;color:var(--ink);}
+  .cc-bar-track{height:18px;background:var(--bg-inset);border-radius:3px;overflow:hidden;}
+  .cc-bar{height:100%;display:flex;align-items:center;justify-content:flex-end;padding-right:6px;min-width:2px;}
+  .cc-bar span{font-family:var(--mono);font-size:10.5px;font-weight:600;color:var(--ink);}
+  .cc-asof{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);text-align:right;}
+
+  /* expanded top stories */
+  .story{background:var(--bg-raised);border:1px solid var(--line);border-radius:6px;padding:20px 22px;margin-bottom:16px;}
+  .story-head{display:flex;gap:14px;align-items:flex-start;}
+  .story-num{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.1em;padding-top:5px;flex:none;}
+  .story-head h3{font-family:var(--serif);font-size:21px;font-weight:600;margin:0;line-height:1.24;letter-spacing:-.01em;}
+  .story-theme{display:inline-block;margin-top:6px;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-faint);border:1px solid var(--line);border-radius:3px;padding:2px 7px;}
+  .story-deck{color:var(--ink-soft);font-size:14.5px;margin:12px 0 0;max-width:92ch;}
+  .story-block{margin-top:18px;}
+  .story-block h4{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-faint);margin:0 0 9px;padding-bottom:6px;border-bottom:1px solid var(--line-soft);}
+  .story-details{margin:0;padding-left:17px;color:var(--ink-soft);font-size:13.4px;line-height:1.62;}
+  .story-details li{margin-bottom:9px;}
+  .story-details li:last-child{margin-bottom:0;}
+  .story-cols{display:grid;grid-template-columns:1.05fr .95fr;gap:26px;}
+  @media (max-width:860px){.story-cols{grid-template-columns:1fr;gap:4px;}}
+  .story-timeline{margin:0;padding:0;list-style:none;counter-reset:tl;}
+  .story-timeline li{display:flex;gap:11px;padding:7px 0;border-bottom:1px solid var(--line-soft);font-size:13px;}
+  .story-timeline li:last-child{border-bottom:none;}
+  .tl-when{font-family:var(--mono);font-size:10.5px;color:var(--accent-soft);white-space:nowrap;flex:none;
+    padding-top:2px;min-width:92px;}
+  .tl-what{color:var(--ink-soft);line-height:1.5;}
+  .tl-src{font-family:var(--mono);font-size:10px;color:var(--ink-faint);margin-left:5px;}
+  .tl-src a{color:var(--ink-faint);text-decoration:underline;text-decoration-color:var(--line);}
+  .tl-src a:hover{color:var(--accent);}
+  .story-quote{margin:0 0 12px;padding:10px 0 10px 14px;border-left:2px solid var(--accent-soft);background:var(--quote-bg);
+    border-radius:0 4px 4px 0;padding-right:12px;}
+  .story-quote p{margin:0;font-family:var(--serif);font-size:13.8px;font-style:italic;line-height:1.52;color:var(--ink);}
+  .story-quote footer{margin-top:7px;font-size:12px;color:var(--ink-soft);}
+  .story-quote footer b{color:var(--accent);font-weight:600;font-style:normal;}
+  .q-when{display:block;font-family:var(--mono);font-size:10px;color:var(--ink-faint);margin-top:3px;}
+  .q-when a{color:var(--ink-faint);text-decoration:underline;text-decoration-color:var(--line);}
+  .q-when a:hover{color:var(--accent);}
+  .story-flag{margin-top:16px;padding:9px 12px;background:var(--bg-inset);border:1px solid var(--line);
+    border-left:2px solid var(--down);border-radius:0 4px 4px 0;font-size:12.6px;color:var(--ink-soft);line-height:1.55;}
+  .story-flag b{color:var(--down);}
+  .story-sources{margin-top:14px;}
+  .story-sources > summary{cursor:pointer;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--ink-faint);list-style:none;}
+  .story-sources > summary::-webkit-details-marker{display:none}
+  .story-sources > summary::before{content:'▸ ';color:var(--accent);}
+  .story-sources[open] > summary::before{content:'▾ ';}
+  .story-sources ul{margin:9px 0 0;padding-left:17px;font-size:12.4px;color:var(--ink-soft);line-height:1.6;}
+  .story-sources li{margin-bottom:5px;}
+  .story-sources a{color:var(--ink-soft);text-decoration:underline;text-decoration-color:var(--line);}
+  .story-sources a:hover{color:var(--accent);}
+  .src-when{font-family:var(--mono);font-size:10px;color:var(--ink-faint);margin-left:6px;}
+  .src-note{font-size:11px;color:var(--ink-faint);font-style:italic;margin-left:6px;}
+
+  /* yield curve: today vs. three months ago */
+  .curve-compare{margin:8px 0 2px;font-size:11.5px;color:var(--ink-soft);line-height:1.6;}
+  .curve-compare .cc-key{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);margin-right:14px;display:inline-flex;align-items:center;gap:6px;}
+  .curve-compare .cc-key i{width:18px;height:0;display:inline-block;border-top:2.5px solid var(--accent);}
+  .curve-compare .cc-key i.cc-prior{border-top:1.6px dashed var(--ink-faint);}
+  .curve-compare .cc-deltas{display:block;font-family:var(--mono);font-size:11px;margin-top:6px;color:var(--ink-faint);}
+  .curve-compare .cc-deltas b{color:var(--ink);font-weight:600;}
+  .curve-compare .cc-up{color:var(--down);font-weight:600;}
+  .curve-compare .cc-down{color:var(--up);font-weight:600;}
+  .curve-compare .cc-note{display:block;margin-top:7px;font-size:11.5px;color:var(--ink-faint);}
+
+  /* rank/bump + log-line charts (sector rotation, credit history) */
+  .rot-svg{width:100%;height:auto;display:block;overflow:visible;}
+  .rot-endlabel{font-family:var(--mono);font-size:9.5px;dominant-baseline:middle;}
+  .rot-line{transition:opacity .13s;}
+  .rot-svg:hover .rot-line{opacity:.28;}
+  .rot-svg .rot-line:hover{opacity:1;}
+  .rot-callouts{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:12px 0 4px;}
+  .rot-callout{background:var(--bg-inset);border:1px solid var(--line-soft);border-radius:5px;padding:9px 11px;}
+  .rot-callout .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);}
+  .rot-callout .v{font-family:var(--serif);font-size:15px;font-weight:600;margin-top:3px;}
+  .rot-callout .s{font-size:11.5px;color:var(--ink-soft);margin-top:2px;}
+
+  /* news digest */
+  .nd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;background:var(--line-soft);
+    border:1px solid var(--line-soft);border-radius:5px;overflow:hidden;}
+  .nd-item{background:var(--bg-raised);padding:11px 13px;display:flex;flex-direction:column;gap:4px;}
+  .nd-item:hover{background:var(--bg-inset);}
+  .nd-meta{display:flex;align-items:baseline;gap:8px;font-family:var(--mono);font-size:10px;color:var(--ink-faint);}
+  .nd-src{color:var(--accent-soft);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:52%;}
+  .nd-time{margin-left:auto;white-space:nowrap;}
+  .nd-item h4{margin:0;font-family:var(--serif);font-size:14px;font-weight:600;line-height:1.3;}
+  .nd-item h4 a{color:var(--ink);text-decoration:none;}
+  .nd-item h4 a:hover{color:var(--accent);text-decoration:underline;}
+  .nd-item p{margin:0;color:var(--ink-soft);font-size:12px;line-height:1.42;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .nd-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px;}
+  .nd-card{background:var(--bg-raised);border:1px solid var(--line);border-radius:5px;padding:14px 16px;}
+  .nd-card h4{margin:0 0 4px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);}
+  .nd-card .cap{font-size:11.5px;color:var(--ink-faint);margin:0 0 11px;line-height:1.45;}
+  .nd-bar{display:flex;align-items:center;gap:9px;margin-bottom:6px;font-size:12.5px;}
+  .nd-bar .lbl{flex:1;color:var(--ink-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .nd-bar .track{width:70px;height:7px;background:var(--bg-inset);border-radius:4px;overflow:hidden;flex:none;}
+  .nd-bar .fill{height:100%;background:var(--accent);border-radius:4px;}
+  .nd-bar .v{font-family:var(--mono);font-size:11px;width:58px;text-align:right;flex:none;color:var(--ink-faint);}
+  .nd-bar .v b{color:var(--ink);font-weight:600;}
+  .nd-corr{border-bottom:1px solid var(--line-soft);padding:9px 0;}
+  .nd-corr:last-child{border-bottom:none;}
+  .nd-corr .t{font-family:var(--serif);font-size:13.5px;font-weight:600;line-height:1.3;}
+  .nd-corr .t a{color:var(--ink);text-decoration:none;}
+  .nd-corr .t a:hover{color:var(--accent);}
+  .nd-corr .o{font-family:var(--mono);font-size:10px;color:var(--ink-faint);margin-top:4px;line-height:1.5;}
+  .nd-corr .n{color:var(--up);font-weight:600;}
+
+  /* streamgraph (legacy legend styles, reused by the charts above) */
+  .stream-svg{width:100%;height:auto;display:block;}
+  .stream-legend{display:flex;flex-wrap:wrap;gap:5px 14px;margin-top:10px;font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);}
+  .stream-legend-item{display:flex;align-items:center;gap:5px;}
+  .stream-legend-item i{width:11px;height:11px;border-radius:2px;display:inline-block;flex:none;}
+
+  /* multi-snapshot curve evolution (yield curve / credit curve) */
+  .evo-legend{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);}
+  .evo-legend-item{display:flex;align-items:center;gap:5px;cursor:pointer;user-select:none;padding:3px 6px;border-radius:4px;transition:background .1s;}
+  .evo-legend-item:hover{background:var(--bg-inset);}
+  .evo-legend-item i{display:inline-block;width:16px;height:2px;border-radius:1px;}
+  .evo-toggle{position:absolute;opacity:0;width:0;height:0;}
+  .evo-toggle:not(:checked) + .evo-legend-item{opacity:.35;text-decoration:line-through;text-decoration-color:var(--ink-faint);}
+  .evo-line-group{transition:opacity .15s;}
+  .country-focus-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-family:var(--sans);font-size:12px;color:var(--ink-soft);}
+  .country-focus{font-family:var(--sans);font-size:12.5px;color:var(--ink);background:var(--bg-inset);border:1px solid var(--line);border-radius:4px;padding:4px 8px;}
+  .evo-vintage{font-family:var(--mono);font-size:9.5px;color:var(--ink-faint);margin-left:3px;}
+  .evo-vintage.stale{color:var(--down);}
+
+  /* change matrix -- color-coded level + Δ vs each lookback, click header for context */
+  .chg-matrix thead th small{display:block;font-weight:400;font-size:9px;color:var(--ink-faint);text-transform:none;letter-spacing:0;}
+  .chg-legend{display:flex;align-items:center;gap:8px;margin-top:8px;font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);}
+
+  /* native click-to-expand deep dive */
+  details.dd{border:1px solid var(--line);border-radius:4px;margin-bottom:6px;background:var(--bg-inset);}
+  details.dd summary{padding:8px 12px;cursor:pointer;font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--ink);list-style:none;display:flex;justify-content:space-between;align-items:center;}
+  details.dd summary::-webkit-details-marker{display:none;}
+  details.dd summary::before{content:'+';color:var(--accent);font-weight:700;margin-right:8px;width:10px;display:inline-block;}
+  details.dd[open] summary::before{content:'\2212';}
+  details.dd .dd-now{color:var(--accent);font-weight:700;}
+  details.dd .dd-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12px;}
+  details.dd .dd-table td{padding:5px 12px;border-top:1px solid var(--line-soft);}
+  .dd-wrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-top:14px;}
+
+  /* market pulse (day/week/month/YTD movers) */
+  .pulse-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;}
+  .pulse-col h4{font-family:var(--serif);font-size:15px;font-weight:600;margin:0 0 10px;}
+  .pulse-sub{font-family:var(--sans);font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);margin:8px 0 4px;font-weight:600;}
+  .pulse-list{list-style:none;margin:0;padding:0;}
+  .pulse-list li{font-size:12.5px;color:var(--ink-soft);padding:3px 0;display:flex;align-items:center;gap:7px;}
+  .pulse-list b{color:var(--ink);font-family:var(--sans);}
+  .pulse-list small{color:var(--ink-faint);}
+  .pulse-col details.dd{margin-top:8px;}
+  .pulse-col details.dd summary{font-size:11px;}
+  .pulse-col details.dd .pulse-sub:first-child{margin-top:4px;}
+
+  /* news pulse (accumulating story log, week/month) */
+  .news-tabs{display:flex;gap:2px;margin-bottom:14px;border-bottom:1px solid var(--line);}
+  .news-tab-input{position:absolute;opacity:0;width:0;height:0;}
+  .news-tab-label{padding:8px 16px;font-family:var(--sans);font-size:12px;font-weight:600;color:var(--ink-faint);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;}
+  .news-tab-input:checked + .news-tab-label{color:var(--accent);border-bottom-color:var(--accent);}
+  .news-panel{display:none;}
+  #news-tab-week:checked ~ .news-panels #news-panel-week,
+  #news-tab-month:checked ~ .news-panels #news-panel-month{display:block;}
+  .news-log{list-style:none;margin:0;padding:0;}
+  .news-log li{display:flex;gap:14px;padding:9px 0;border-bottom:1px solid var(--line-soft);font-size:13px;color:var(--ink-soft);}
+  .news-log li:last-child{border-bottom:none;}
+  .news-log .news-date{font-family:var(--mono);font-size:11px;color:var(--ink-faint);flex:none;width:52px;padding-top:1px;}
+
+  /* CB rate comparison bars (real rate, carry vs Fed) */
+  .cbcmp-row{display:grid;grid-template-columns:66px 1fr 64px;align-items:center;gap:10px;padding:6px 0;}
+  .cbcmp-label{font-family:var(--sans);font-weight:700;font-size:12px;color:var(--ink);}
+  .cbcmp-bar-track{position:relative;height:14px;background:var(--bg-inset);border-radius:3px;overflow:hidden;}
+  .cbcmp-bar{position:absolute;top:0;bottom:0;}
+  .cbcmp-bar-left{right:50%;}
+  .cbcmp-bar-right{left:50%;}
+  .cbcmp-zero{position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--line);}
+  .cbcmp-value{font-family:var(--mono);font-size:12px;font-weight:600;text-align:right;color:var(--ink);}
+
+  /* CB rates quadrant */
+  .cb-quad-wrap{margin:14px 0 6px;}
+  svg.cbquad{width:100%;height:auto;display:block;}
+  .cbquad-axis-label{font-family:var(--sans);font-size:10.5px;font-weight:600;fill:var(--ink-faint);text-transform:uppercase;letter-spacing:.05em;}
+  .cbquad-tick{font-family:var(--mono);font-size:9.5px;fill:var(--ink-faint);}
+  .cbquad-name{font-family:var(--sans);font-size:11px;font-weight:700;fill:var(--ink);}
+  .cbquad-rate{font-family:var(--mono);font-size:10px;fill:var(--ink-soft);}
+  .cb-matrix-table{margin-top:18px;}
+
+  /* macro panel */
+  .macro-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+  .macro-tile{background:var(--bg-raised);border:1px solid var(--line);border-radius:6px;padding:14px 16px;}
+  .macro-tile .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);}
+  .macro-tile .v{font-family:var(--mono);font-size:19px;font-weight:600;margin-top:4px;}
+  .macro-tile .d{font-family:var(--mono);font-size:11.5px;margin-top:3px;}
+  .macro-tile .asof{font-size:10.5px;color:var(--ink-faint);margin-top:6px;}
+
+  footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);}
+  footer p{font-size:11.5px;color:var(--ink-faint);font-family:var(--mono);margin:0 0 10px;}
+  .src-grid{columns:2;column-gap:24px;font-size:12px;}
+  @media (max-width:600px){.src-grid{columns:1;}}
+  .src-grid a{color:var(--ink-faint);display:block;margin-bottom:7px;text-decoration:none;break-inside:avoid;}
+  .src-grid a:hover{color:var(--accent);text-decoration:underline;}
+  .src-grid span{color:var(--ink-faint);font-family:var(--mono);font-size:11px;margin-right:4px;}
+</style>
+
+<div class="wrap">
+
+  <div class="masthead">
+    <div>
+      <h1 class="masthead-title">{{ meta.title }}</h1>
+      <div class="masthead-sub">{{ meta.subtitle }}</div>
+    </div>
+    <div class="masthead-date">{{ meta.day_name }} <b>{{ meta.date_label }}</b><br>All times Pacific</div>
+  </div>
+
+  <nav class="toc" id="toc">
+    <a href="#top" data-spy="top">Top stories</a>
+    {% if news_digest %}<a href="#newsroom" data-spy="newsroom">Newsroom</a>{% endif %}
+    {% if news_digest %}<a href="#newsanalysis" data-spy="newsanalysis">News analysis</a>{% endif %}
+    <a href="#newspulse" data-spy="newspulse">News pulse</a>
+    <a href="#marketpulse" data-spy="marketpulse">Market pulse</a>
+    <a href="#dash" data-spy="dash">Dashboard</a>
+    <a href="#heatmap" data-spy="heatmap">Returns heatmap</a>
+    <a href="#valuation" data-spy="valuation">Relative valuation</a>
+    <a href="#deepdive" data-spy="deepdive">Equities &amp; rates</a>
+    <a href="#duration" data-spy="duration">Duration &amp; credit curve</a>
+    <a href="#macro" data-spy="macro">Macro panel</a>
+    {% if has_global_macro %}<a href="#globalmacro" data-spy="globalmacro">Global macro matrix</a>{% endif %}
+    {% if has_labor_market %}<a href="#labormarket" data-spy="labormarket">US labor market</a>{% endif %}
+    <a href="#centralbanks" data-spy="centralbanks">Central banks</a>
+    <a href="#cbrates" data-spy="cbrates">CB rates matrix</a>
+    <a href="#credit" data-spy="credit">Private credit / AI financing</a>
+    <a href="#stagflation" data-spy="stagflation">Stagflation debate</a>
+    <a href="#playbook" data-spy="playbook">Playbook lens</a>
+    <a href="#watch" data-spy="watch">Watch list</a>
+    <a href="#sources" data-spy="sources">Sources</a>
+  </nav>
+
+  {# Sector-leadership bump chart. Rank 1 at top; a line crossing another IS
+     the rotation event, which is what the old streamgraph could not show. #}
+  {% macro rotation_chart(rot) %}
+  <svg class="curve rot-svg" viewBox="0 0 620 350" xmlns="http://www.w3.org/2000/svg">
+    {% for r in rot.rank_axis %}
+    <line x1="{{ rot.bounds.x0 }}" y1="{{ r.y }}" x2="{{ rot.bounds.x1 }}" y2="{{ r.y }}"
+          stroke="var(--line-soft)" stroke-width="0.6"/>
+    <text x="{{ rot.bounds.x0 - 12 }}" y="{{ r.y + 3.5 }}" text-anchor="end" class="curve-label">{{ r.label }}</text>
+    {% endfor %}
+    {% for c in rot.x_axis %}
+    <text x="{{ c.x }}" y="{{ rot.bounds.y1 + 20 }}" text-anchor="middle" class="curve-label">{{ c.label }}</text>
+    {% endfor %}
+    <text x="{{ rot.bounds.x0 - 12 }}" y="{{ rot.bounds.y0 - 10 }}" text-anchor="end" class="curve-label"
+          style="fill:var(--ink-faint)">rank</text>
+    {% for line in rot.lines %}
+    <g class="rot-line" data-sector="{{ line.name }}">
+      <polyline points="{{ line.polyline }}" fill="none" stroke="{{ line.color }}"
+                stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity="0.92"/>
+      {% for p in line.points %}
+      <circle cx="{{ p.x }}" cy="{{ p.y }}" r="2.6" fill="{{ line.color }}">
+        <title>{{ line.label }} &mdash; {{ p.cat }}: rank {{ p.rank }} of {{ rot.n_ranks }}, {{ rot.lookback }}M return {{ p.ret }}%</title>
+      </circle>
+      {% endfor %}
+      <text x="{{ line.end_x + 9 }}" y="{{ line.end_y + 3.5 }}" class="rot-endlabel" fill="{{ line.color }}">{{ line.label }}</text>
+    </g>
+    {% endfor %}
+  </svg>
+  <div class="stream-legend">
+    {% for line in rot.lines %}
+    <span class="stream-legend-item"><i style="background:{{ line.color }};"></i>{{ line.label }}
+      <span style="color:var(--ink-faint);">#{{ line.end_rank }} &middot; {{ line.end_ret }}%</span></span>
+    {% endfor %}
+  </div>
+  {% endmacro %}
+
+  {# Log-scaled OAS lines by rating. Log because AAA(~40bp) and CCC(~1100bp)
+     cannot share a linear axis without flattening all of investment grade. #}
+  {% macro credit_lines(ch) %}
+  <svg class="curve rot-svg" viewBox="0 0 620 300" xmlns="http://www.w3.org/2000/svg">
+    {% for g in ch.gridlines %}
+    <line x1="{{ ch.bounds.x0 }}" y1="{{ g.y }}" x2="{{ ch.bounds.x1 }}" y2="{{ g.y }}"
+          stroke="var(--line-soft)" stroke-width="0.6" stroke-dasharray="2 3"/>
+    <text x="{{ ch.bounds.x0 - 8 }}" y="{{ g.y + 3.5 }}" text-anchor="end" class="curve-label">{{ g.label }}</text>
+    {% endfor %}
+    {% for c in ch.x_axis %}
+    <text x="{{ c.x }}" y="{{ ch.bounds.y1 + 18 }}" text-anchor="middle" class="curve-label">{{ c.label }}</text>
+    {% endfor %}
+    {% for line in ch.lines %}
+    <g class="rot-line">
+      <polyline points="{{ line.polyline }}" fill="none" stroke="{{ line.color }}" stroke-width="1.9"
+                stroke-linejoin="round" opacity="0.92"/>
+      {% for p in line.points %}
+      <circle cx="{{ p.x }}" cy="{{ p.y }}" r="1.8" fill="{{ line.color }}" opacity="0.75">
+        <title>{{ line.label }} &mdash; {{ p.cat }}: {{ p.value }}bp</title>
+      </circle>
+      {% endfor %}
+      <text x="{{ line.end_x + 8 }}" y="{{ line.end_y + 3.5 }}" class="rot-endlabel" fill="{{ line.color }}">{{ line.label }}</text>
+    </g>
+    {% endfor %}
+  </svg>
+  <div class="stream-legend">
+    {% for line in ch.lines %}
+    <span class="stream-legend-item"><i style="background:{{ line.color }};"></i>{{ line.label }}
+      <span style="color:var(--ink-faint);">{{ line.last_value }}bp</span></span>
+    {% endfor %}
+  </div>
+  {% endmacro %}
+
+  {# One news item with its publication timestamp always visible. #}
+  {% macro news_item(h) %}
+  <article class="nd-item">
+    <div class="nd-meta">
+      <span class="nd-src">{{ h.source or 'Unattributed' }}</span>
+      <time class="nd-time" title="{{ h.published_pt or 'No timestamp in feed' }}">{{ h.published_pt or h.age_label }}</time>
+    </div>
+    <h4>{% if h.link %}<a href="{{ h.link }}" target="_blank" rel="noopener noreferrer">{{ h.title }}</a>{% else %}{{ h.title }}{% endif %}</h4>
+    {% if h.summary %}<p>{{ h.summary }}</p>{% endif %}
+  </article>
+  {% endmacro %}
+
+  <section id="top">
+    <h2 class="sec"><span class="dot"></span>Top stories</h2>
+    <p class="sec-intro">
+      Five stories with the underlying mechanics, a dated timeline, and named quotes carrying the date each was
+      said &mdash; so every claim below can be placed in time. Anything without a verifiable date says so rather
+      than guessing one.{% if top_stories_researched_at %} Researched {{ top_stories_researched_at }}.{% endif %}
+    </p>
+
+    {% for s in top_stories %}
+    <article class="story">
+      <div class="story-head">
+        <span class="story-num">{{ s.num }}</span>
+        <div>
+          <h3>{{ s.title }}</h3>
+          {% if s.playbook_label %}<span class="story-theme">{{ s.playbook_label }}</span>{% endif %}
+        </div>
+      </div>
+      <p class="story-deck">{{ s.body }}</p>
+
+      {% if s.details %}
+      <div class="story-block">
+        <h4>What's underneath</h4>
+        <ul class="story-details">
+          {% for d in s.details %}<li>{{ d }}</li>{% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <div class="story-cols">
+        {% if s.timeline %}
+        <div class="story-block">
+          <h4>Timeline</h4>
+          <ol class="story-timeline">
+            {% for t in s.timeline %}
+            <li>
+              <span class="tl-when">{{ t.date }}{% if t.time %} &middot; {{ t.time }}{% endif %}</span>
+              <span class="tl-what">{{ t.event }}
+                {% if t.source %}<span class="tl-src">{% if t.url %}<a href="{{ t.url }}" target="_blank" rel="noopener noreferrer">{{ t.source }}</a>{% else %}{{ t.source }}{% endif %}</span>{% endif %}
+              </span>
+            </li>
+            {% endfor %}
+          </ol>
+        </div>
+        {% endif %}
+
+        {% if s.quotes %}
+        <div class="story-block">
+          <h4>Said on the record</h4>
+          {% for q in s.quotes %}
+          <blockquote class="story-quote">
+            <p>&ldquo;{{ q.text }}&rdquo;</p>
+            <footer>
+              <b>{{ q.name }}</b>{% if q.title %}, {{ q.title }}{% endif %}
+              <span class="q-when">{% if q.said_on %}said {{ q.said_on }}{% else %}date not established{% endif %}{% if q.source_label %} &middot; {% if q.url %}<a href="{{ q.url }}" target="_blank" rel="noopener noreferrer">{{ q.source_label }}</a>{% else %}{{ q.source_label }}{% endif %}{% endif %}</span>
+            </footer>
+          </blockquote>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      {% if s.disagreement %}
+      <div class="story-flag"><b>Sources disagree:</b> {{ s.disagreement }}</div>
+      {% endif %}
+
+      {% if s.read %}<div class="read">{{ s.read }}</div>{% endif %}
+
+      {% if s.sources %}
+      <details class="story-sources">
+        <summary>{{ s.sources | length }} sources, with publication dates</summary>
+        <ul>
+          {% for src in s.sources %}
+          <li>
+            {% if src.url %}<a href="{{ src.url }}" target="_blank" rel="noopener noreferrer">{{ src.label }}</a>{% else %}{{ src.label }}{% endif %}
+            <span class="src-when">{{ src.published or 'undated' }}</span>
+            {% if src.note %}<span class="src-note">{{ src.note }}</span>{% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </details>
+      {% endif %}
+    </article>
+    {% endfor %}
+
+    {% if top_stories_notes %}
+    <details class="story-sources" style="margin-top:6px;">
+      <summary>{{ top_stories_notes | length }} research caveats and unresolved conflicts</summary>
+      <ul>
+        {% for n in top_stories_notes %}<li>{{ n }}</li>{% endfor %}
+      </ul>
+    </details>
+    {% endif %}
+  </section>
+
+  {% if news_digest %}
+  <section id="newsroom">
+    <h2 class="sec"><span class="dot"></span>Newsroom &mdash; what came in, with times</h2>
+    <p class="sec-intro">
+      {{ news_digest.totals.headlines }} stories from {{ news_digest.distinct_sources }} outlets in the last
+      {{ news_digest.daily_window_hours }} hours ({{ news_digest.weekly_totals.headlines }} from
+      {{ news_digest.weekly_distinct_sources }} over {{ news_digest.weekly_window_hours // 24 }} days), pulled
+      {{ news_digest.generated_at_pt }}. Every item below carries its publication time so you can see when it
+      landed relative to the moves above. The full reader, with weekly view and per-topic desks, is
+      <code style="font-family:var(--mono)">briefs/{{ news_digest_date }}-news.html</code>.
+    </p>
+    <div class="nd-grid">
+      {% for h in news_digest.front_headlines %}{{ news_item(h) }}{% endfor %}
+    </div>
+
+    {% if news_digest.premium_leads %}
+    <h3 style="font-family:var(--serif);font-size:19px;font-weight:600;margin:28px 0 4px;">What the paywalled desks are leading with</h3>
+    <p class="sec-intro" style="margin-top:0;">Story selection is itself a signal: these are the desks' own front pages, readable without the article bodies. Headlines only &mdash; treat them as pointers and confirm any number from a free source before it reaches the brief.</p>
+    <div class="nd-cols">
+      {% for desk in news_digest.premium_leads %}
+      <div class="nd-card">
+        <h4>{{ desk.label }} &middot; {{ desk.count }} today</h4>
+        {% for h in desk.headlines %}
+        <div class="nd-corr">
+          <div class="t">{% if h.link %}<a href="{{ h.link }}" target="_blank" rel="noopener noreferrer">{{ h.title }}</a>{% else %}{{ h.title }}{% endif %}</div>
+          <div class="o">{{ h.published_pt or h.age_label }}</div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </section>
+
+  <section id="newsanalysis">
+    <h2 class="sec"><span class="dot"></span>News analysis &mdash; computed, not summarized</h2>
+    <p class="sec-intro">
+      Three readings of the same pull, each derived in Python from the headline corpus rather than written by
+      hand, so they refresh with the data and can't drift from it. None of them is a claim about markets &mdash;
+      they are claims about <i>coverage</i>, which is a leading indicator of attention, not of price.
+    </p>
+
+    <div class="nd-cols">
+      <div class="nd-card">
+        <h4>Attention shift &mdash; today vs. a normal day</h4>
+        <p class="cap">Each topic's count today against the <b>median</b> of its own prior days in the weekly
+          window. Median, and prior days only, because a mean over the full window includes today (inflating its
+          own baseline) and spans a weekend (whose near-zero counts make every weekday look like a surge).
+          Ratios are capped at a baseline of 1 so a normally-silent topic can't post a huge multiple off one
+          article.</p>
+        {% for row in news_digest.attention %}
+        <div class="nd-bar">
+          <span class="lbl">{{ row.label }}</span>
+          <span class="track"><span class="fill" style="width:{{ [row.ratio / 10 * 100, 100] | min }}%"></span></span>
+          <span class="v"><b>{{ row.ratio }}&times;</b> {{ row.today }}/{{ row.baseline_per_day }}</span>
+        </div>
+        {% endfor %}
+        <p class="cap" style="margin:10px 0 0;">Read as "articles this tool captured," not "articles published"
+          &mdash; each query returns a capped number of most-recent items, so older days are under-sampled.</p>
+      </div>
+
+      <div class="nd-card">
+        <h4>Corroboration &mdash; distinct outlets per story</h4>
+        <p class="cap">The brief's "count independent sources, not articles" rule applied mechanically: headlines
+          clustered by shared vocabulary, then counted by <i>outlet</i>. A floor, not proof of independence
+          &mdash; syndication means several outlets can still be one wire.</p>
+        {% for row in news_digest.corroboration %}
+        <div class="nd-corr">
+          <div class="t">{% if row.link %}<a href="{{ row.link }}" target="_blank" rel="noopener noreferrer">{{ row.title }}</a>{% else %}{{ row.title }}{% endif %}</div>
+          <div class="o"><span class="n">{{ row.outlet_count }} outlets</span> &middot; {{ row.article_count }} articles
+            &middot; first seen {{ row.lead_published_pt or row.lead_age }}<br>{{ row.outlets | join(' · ') }}</div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="nd-card">
+        <h4>Playbook exposure &mdash; live news volume by theme</h4>
+        <p class="cap">Topic volume mapped onto the playbook's six structural themes, so the frame gets a
+          measured read rather than an asserted one. Share is of today's topic-desk total.</p>
+        {% for row in news_digest.playbook_volume %}
+        <div class="nd-bar">
+          <span class="lbl">{{ row.label }}</span>
+          <span class="track"><span class="fill" style="width:{{ row.share_today }}%"></span></span>
+          <span class="v"><b>{{ row.today }}</b> / {{ row.week }}wk</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    {% if news_digest.analysis_reads %}
+    <h3 style="font-family:var(--serif);font-size:19px;font-weight:600;margin:28px 0 4px;">Argument pieces worth reading</h3>
+    <p class="sec-intro" style="margin-top:0;">Headlines whose wording signals a claim rather than a report, weighted toward the premium desks and primary sources and toward the last 12 hours. Surfaced for <i>reading</i> &mdash; nothing here has been summarized into a fact, and none of it belongs in the brief until a named source and a date are attached to it.</p>
+    <div class="nd-grid">
+      {% for h in news_digest.analysis_reads %}{{ news_item(h) }}{% endfor %}
+    </div>
+    {% endif %}
+
+    {% if news_digest.fetch_errors %}
+    <p class="hm-note" style="margin-top:16px;">Feeds that failed this run (a thin section here may be collection, not a quiet market):
+      {% for e in news_digest.fetch_errors %}<code style="font-family:var(--mono)">{{ e.group }}</code>{% if not loop.last %}, {% endif %}{% endfor %}.</p>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  <section id="newspulse">
+    <h2 class="sec"><span class="dot"></span>News pulse &mdash; this week / this month</h2>
+    <p class="sec-intro">Built by scanning every day's Top Stories automatically ({{ news_pulse.days_covered }} day{{ 's' if news_pulse.days_covered != 1 else '' }} of history so far) &mdash; no story is retyped, this just accumulates as daily briefs run. Today's stories are in Top Stories above; this is the rollup of the days <i>before</i> today.</p>
+    <input type="radio" name="news-tab" id="news-tab-week" class="news-tab-input" checked>
+    <input type="radio" name="news-tab" id="news-tab-month" class="news-tab-input">
+    <div class="news-tabs">
+      <label class="news-tab-label" for="news-tab-week">This week ({{ news_pulse.this_week | length }})</label>
+      <label class="news-tab-label" for="news-tab-month">This month ({{ news_pulse.this_month | length }})</label>
+    </div>
+    <div class="news-panels">
+      <div class="news-panel" id="news-panel-week">
+        {% if news_pulse.this_week %}
+        <ul class="news-log">
+          {% for e in news_pulse.this_week %}
+          <li><span class="news-date">{{ e.date_label }}</span>{{ e.title }}</li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="hm-note">No prior days in the last 7 yet &mdash; this fills in as daily briefs accumulate.</p>
+        {% endif %}
+      </div>
+      <div class="news-panel" id="news-panel-month">
+        {% if news_pulse.this_month %}
+        <ul class="news-log">
+          {% for e in news_pulse.this_month %}
+          <li><span class="news-date">{{ e.date_label }}</span>{{ e.title }}</li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="hm-note">No prior days in the last 30 yet &mdash; this fills in as daily briefs accumulate.</p>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <section id="marketpulse">
+    <h2 class="sec"><span class="dot"></span>Market pulse &mdash; movers by horizon</h2>
+    <p class="sec-intro">The quantitative counterpart to News Pulse: best/worst performers across all 32 sector/factor/asset tickers, at each horizon, computed directly from the Yahoo Finance pull &mdash; not restated from a headline.</p>
+    <div class="pulse-grid">
+{{ market_pulse }}
+    </div>
+  </section>
+
+  <section id="dash">
+    <h2 class="sec"><span class="dot"></span>Dashboard</h2>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>Metric</th><th>Level</th><th>Change</th><th>Source</th><th>As of</th></tr></thead>
+        <tbody>
+          {% for r in dashboard_table %}
+          <tr>
+            <td class="metric">{{ r.metric | safe }}</td>
+            <td class="lvl">{{ r.level | safe }}</td>
+            <td><span class="chip {{ r.chip_class }}">{{ r.chip_text | safe }}</span></td>
+            <td class="src">{% if r.source_url %}<a href="{{ r.source_url }}" target="_blank" rel="noopener">{{ r.source_label }}</a>{% else %}{{ r.source_label }}{% endif %}</td>
+            <td>{{ r.asof }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="heatmap">
+    <h2 class="sec"><span class="dot"></span>Factor &amp; asset returns heatmap</h2>
+    <p class="sec-intro">Pulled directly from Yahoo Finance (32 tickers, adjusted close) rather than reported off a news article &mdash; this is the quantitative complement to the qualitative sections above. Sector SPDRs, MSCI/Russell factor ETFs, and a cross-asset basket, each across five lookback windows.</p>
+    <div class="hm-scroll">
+      <table class="hm">
+        <thead><tr><th>Ticker</th><th>Name</th><th>1D</th><th>1W</th><th>1M</th><th>3M</th><th>YTD</th></tr></thead>
+        <tbody>
+{{ heatmap_rows }}
+        </tbody>
+      </table>
+    </div>
+    <div class="hm-legend">
+      <span>Color = magnitude of return (capped at &plusmn;15% for saturation)</span>
+    </div>
+    <p class="hm-note">{{ heatmap_note }} Generated by <code style="font-family:var(--mono);">briefs/scripts/fetch_market_data.py</code>; raw data in <code style="font-family:var(--mono);">briefs/data/</code>.</p>
+
+    {% if sector_rotation %}
+    <h3 style="font-family:var(--serif);font-size:19px;font-weight:600;margin:28px 0 4px;">Sector leadership, trailing year</h3>
+    <p class="sec-intro" style="margin-top:0;">The heatmap above is a snapshot; this is the ordering that produced it. Each sector is ranked 1&ndash;{{ sector_rotation.n_ranks }} every month on its trailing {{ sector_rotation.lookback }}-month return, so <b>a line crossing another is a leadership change</b> &mdash; which is what rotation actually means. Hover any line to isolate it; hover a point for that month's rank and return. {{ sector_rotation.span }}.</p>
+    <div class="panel">
+      {{ rotation_chart(sector_rotation) }}
+      <div class="rot-callouts">
+        <div class="rot-callout">
+          <div class="k">Leading now</div>
+          <div class="v">{{ sector_rotation.leaders[0].label }}</div>
+          <div class="s">{{ sector_rotation.leaders[0].ret }}% over {{ sector_rotation.lookback }}M</div>
+        </div>
+        <div class="rot-callout">
+          <div class="k">Lagging now</div>
+          <div class="v">{{ sector_rotation.laggards[-1].label }}</div>
+          <div class="s">{{ sector_rotation.laggards[-1].ret }}% over {{ sector_rotation.lookback }}M</div>
+        </div>
+        {% if sector_rotation.biggest_climb and sector_rotation.biggest_climb.moved > 0 %}
+        <div class="rot-callout">
+          <div class="k">Biggest climb</div>
+          <div class="v">{{ sector_rotation.biggest_climb.label }}</div>
+          <div class="s">up {{ sector_rotation.biggest_climb.moved }} places, #{{ sector_rotation.biggest_climb.start_rank }} &rarr; #{{ sector_rotation.biggest_climb.end_rank }}</div>
+        </div>
+        {% endif %}
+        {% if sector_rotation.biggest_fall and sector_rotation.biggest_fall.moved < 0 %}
+        <div class="rot-callout">
+          <div class="k">Biggest fall</div>
+          <div class="v">{{ sector_rotation.biggest_fall.label }}</div>
+          <div class="s">down {{ -sector_rotation.biggest_fall.moved }} places, #{{ sector_rotation.biggest_fall.start_rank }} &rarr; #{{ sector_rotation.biggest_fall.end_rank }}</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    <p class="hm-note">Rank on trailing {{ sector_rotation.lookback }}-month total return, monthly-resampled adjusted close, from the same Yahoo Finance pull as the heatmap above. Ranked on a rolling return rather than cumulative-since-start, which would be dominated by whichever sector led in month one and would hide the rotation entirely.</p>
+    {% endif %}
+  </section>
+
+  <section id="valuation">
+    <h2 class="sec"><span class="dot"></span>Relative equity valuation &mdash; sector P/E vs. peer group</h2>
+    <p class="sec-intro">Each sector SPDR's trailing P/E plotted against the 11-sector peer average (z-score, bar) and against SPY (%, column) &mdash; a relative cross-section, not a historical-percentile one: no free source publishes multi-year ETF P/E history, so "cheap" and "expensive" here mean cheap/expensive <i>today, versus peers</i>, not versus their own past.</p>
+    <div class="panel">
+      <div class="val-row" style="border-bottom:2px solid var(--line);font-family:var(--sans);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);">
+        <div>Sector</div><div>Cheap &larr; peer avg &rarr; expensive</div><div style="text-align:right;">P/E</div><div style="text-align:right;">vs SPY</div>
+      </div>
+      {{ valuation_bars }}
+      <div class="val-legend"><span>Cheaper than peer group</span><span>Richer than peer group</span></div>
+    </div>
+    <p class="hm-note">{{ valuation_note }} Trailing P/E, price/book and dividend yield pulled live via <code style="font-family:var(--mono);">yfinance</code>; peer z-score computed across the 11 sector SPDRs.</p>
+  </section>
+
+  <section id="deepdive">
+    <h2 class="sec"><span class="dot"></span>Deep dive &mdash; equities &amp; fixed income</h2>
+    <div class="deepdive">
+
+      <div class="panel">
+        <div class="panel-head"><h3>Equities</h3><span class="panel-tag">Global</span></div>
+        <p class="panel-lede">{{ equities_panel.lede }}</p>
+
+        <div class="stat-row">
+          {% for s in equities_panel.stats %}
+          <div class="stat"><div class="k">{{ s.k | safe }}</div><div class="v">{{ s.v }} <small>{{ s.sub }}</small></div></div>
+          {% endfor %}
+        </div>
+
+        <h4>{{ equities_panel.sector_table_caption }}</h4>
+        <div class="tbl-scroll">
+          <table>
+            <thead><tr><th>Sector / ETF</th><th>Move</th><th>Driver</th></tr></thead>
+            <tbody>
+              {% for row in equities_panel.sector_table %}
+              <tr>
+                <td class="metric">{{ row.name }}</td>
+                <td class="lvl"><span class="chip {{ row.chip_class }}">{{ row.chip_text }}</span></td>
+                <td style="white-space:normal;font-family:var(--sans);color:var(--ink-soft);font-size:12.5px;">{{ row.driver }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Why it's educational right now</h4>
+        <p>{{ equities_panel.why }}</p>
+
+        <h4>What's actually moving</h4>
+        <ul>
+          {% for m in equities_panel.moving %}
+          <li><b>{{ m.b }}</b> {{ m.text }}</li>
+          {% endfor %}
+        </ul>
+
+        <div class="read-line"><b>Read</b>{{ equities_panel.read }}</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h3>Fixed Income</h3><span class="panel-tag">Rates &amp; credit</span></div>
+        <p class="panel-lede">{{ fixed_income_panel.lede }}</p>
+
+        <div class="curve-wrap">
+          <svg class="curve" viewBox="0 0 460 130" xmlns="http://www.w3.org/2000/svg">
+            <line x1="40" y1="14" x2="40" y2="100" stroke="var(--line)" stroke-width="1"/>
+            <line x1="40" y1="100" x2="440" y2="100" stroke="var(--line)" stroke-width="1"/>
+            <line x1="40" y1="70" x2="440" y2="70" stroke="var(--line-soft)" stroke-width="1"/>
+            <text x="34" y="73" text-anchor="end" class="curve-label">{{ fixed_income_panel.curve_axis.mid_label }}</text>
+            <line x1="40" y1="30" x2="440" y2="30" stroke="var(--line-soft)" stroke-width="1"/>
+            <text x="34" y="33" text-anchor="end" class="curve-label">{{ fixed_income_panel.curve_axis.max }}</text>
+            <text x="34" y="103" text-anchor="end" class="curve-label">{{ fixed_income_panel.curve_axis.min }}</text>
+            {% if fixed_income_panel.prior_curve_polyline %}
+            <polyline points="{{ fixed_income_panel.prior_curve_polyline }}" fill="none"
+                      stroke="var(--ink-faint)" stroke-width="1.6" stroke-dasharray="4 3" opacity="0.8"/>
+            {% for p in fixed_income_panel.prior_curve_points %}
+            <circle cx="{{ p.x }}" cy="{{ p.y }}" r="2.2" fill="var(--ink-faint)" opacity="0.8">
+              <title>{{ p.tenor }} three months ago: {{ '%.2f' % p.yield }}%</title>
+            </circle>
+            {% endfor %}
+            {% endif %}
+            <polyline points="{{ fixed_income_panel.curve_polyline }}" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+            {% for p in fixed_income_panel.curve_points %}
+            <circle cx="{{ p.x }}" cy="{{ p.y }}" r="3.5" fill="var(--accent)"/>
+            {% endfor %}
+            {% for p in fixed_income_panel.curve_points %}
+            <text x="{{ p.x }}" y="116" text-anchor="middle" class="curve-label">{{ p.tenor }}</text>
+            <text x="{{ p.x }}" y="{{ p.label_y }}" text-anchor="middle" class="curve-value">{{ '%.2f' % p.yield }}</text>
+            {% endfor %}
+          </svg>
+        </div>
+        {% if fixed_income_panel.prior_curve_deltas %}
+        <div class="curve-compare">
+          <span class="cc-key"><i class="cc-now"></i>Today</span>
+          <span class="cc-key"><i class="cc-prior"></i>3 months ago</span>
+          <span class="cc-deltas">
+            {% for d in fixed_income_panel.prior_curve_deltas %}
+            <b>{{ d.tenor }}</b> {{ '%.2f' % d.then }}% &rarr; {{ '%.2f' % d.now }}%
+            <span class="{{ 'cc-up' if d.bp > 0 else ('cc-down' if d.bp < 0 else '') }}">{{ '+' if d.bp > 0 }}{{ d.bp }}bp</span>{% if not loop.last %} &middot; {% endif %}
+            {% endfor %}
+          </span>
+          <span class="cc-note">Dashed line is the same tenors three months ago, from the FRED curve history &mdash; the shape the move started from. Where the dashed and solid lines diverge most is where the term-premium repricing actually landed.</span>
+        </div>
+        {% endif %}
+
+        <h4>Real yield / breakeven / term premium split</h4>
+        <div class="tbl-scroll">
+          <table>
+            <thead><tr><th>Tenor</th><th>Real yield</th><th>Breakeven</th></tr></thead>
+            <tbody>
+              {% for r in fixed_income_panel.real_yield_table %}
+              <tr><td class="metric">{{ r.tenor }}</td><td class="lvl">{{ r.real }}</td><td class="lvl">{{ r.breakeven }}</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:12.5px;">{{ fixed_income_panel.real_yield_note | safe }}</p>
+
+        <h4>Named strategist reaction</h4>
+        {% for q in fixed_income_panel.quotes %}
+        <div class="quote">
+          <blockquote>{{ q.text | safe }}</blockquote>
+          <cite>&mdash; <b>{{ q.name }}</b>, {{ q.title }}</cite>
+        </div>
+        {% endfor %}
+
+        <h4>What's actually moving</h4>
+        <ul>
+          {% for m in fixed_income_panel.moving %}
+          <li><b>{{ m.b }}</b> {{ m.text }}</li>
+          {% endfor %}
+        </ul>
+
+        <div class="read-line"><b>Read</b>{{ fixed_income_panel.read }}</div>
+      </div>
+
+    </div>
+  </section>
+
+  {% macro evolution_chart(evo, unit, prefix) %}
+  <div class="evo-legend">
+    {% for line in evo.lines %}
+    <input type="checkbox" class="evo-toggle" id="{{ prefix }}-{{ loop.index }}" checked>
+    <label class="evo-legend-item" for="{{ prefix }}-{{ loop.index }}"><i style="background:{{ line.color }};opacity:{{ line.opacity }};"></i>{{ line.label }}</label>
+    {% endfor %}
+  </div>
+  <div class="curve-wrap">
+    <svg class="curve" viewBox="0 0 480 250" xmlns="http://www.w3.org/2000/svg">
+      <line x1="{{ evo.bounds.x0 }}" y1="{{ evo.bounds.y0 }}" x2="{{ evo.bounds.x0 }}" y2="{{ evo.bounds.y1 }}" stroke="var(--line)" stroke-width="1"/>
+      <line x1="{{ evo.bounds.x0 }}" y1="{{ evo.bounds.y1 }}" x2="{{ evo.bounds.x1 }}" y2="{{ evo.bounds.y1 }}" stroke="var(--line)" stroke-width="1"/>
+      <line x1="{{ evo.bounds.x0 }}" y1="{{ (evo.bounds.y0 + evo.bounds.y1) / 2 }}" x2="{{ evo.bounds.x1 }}" y2="{{ (evo.bounds.y0 + evo.bounds.y1) / 2 }}" stroke="var(--line-soft)" stroke-width="1" stroke-dasharray="2,3"/>
+      <text x="{{ evo.bounds.x0 - 6 }}" y="{{ evo.bounds.y0 + 4 }}" text-anchor="end" class="curve-label">{{ evo.y_max }}{{ unit }}</text>
+      <text x="{{ evo.bounds.x0 - 6 }}" y="{{ evo.bounds.y1 }}" text-anchor="end" class="curve-label">{{ evo.y_min }}{{ unit }}</text>
+      <text x="{{ evo.bounds.x0 - 6 }}" y="{{ (evo.bounds.y0 + evo.bounds.y1) / 2 + 4 }}" text-anchor="end" class="curve-label">{{ evo.y_mid }}{{ unit }}</text>
+      {% for line in evo.lines %}
+      <g class="evo-line-group" data-for="{{ prefix }}-{{ loop.index }}">
+        <polyline points="{{ line.polyline }}" fill="none" stroke="{{ line.color }}" stroke-width="{{ line.stroke_width }}" stroke-dasharray="{{ line.dasharray }}" opacity="{{ line.opacity }}"/>
+        {% for p in line.points %}
+        <circle cx="{{ p.x }}" cy="{{ p.y }}" r="{{ 3 if line.is_now else 2 }}" fill="{{ line.color }}" opacity="{{ line.opacity }}"><title>{{ line.label }} &middot; {{ p.cat }}: {{ p.value }}{{ unit }}</title></circle>
+        {% endfor %}
+      </g>
+      {% endfor %}
+      {% for c in evo.categories %}
+      <text x="{{ c.x }}" y="{{ evo.bounds.y1 + 16 }}" text-anchor="middle" class="curve-label">{{ c.label }}</text>
+      {% endfor %}
+    </svg>
+  </div>
+  <p class="hm-note">Click a legend item to isolate/hide that snapshot; hover any point for its exact value.{% if evo.missing_snapshots %} {{ evo.missing_snapshots | join(', ') }} not shown &mdash; FRED's public history for this series starts {{ evo.history_start }}.{% endif %}</p>
+  {% endmacro %}
+
+  {% macro country_history_chart(evo, unit, prefix) %}
+  <div class="country-focus-row">
+    <label for="{{ prefix }}-focus">Focus:</label>
+    <select id="{{ prefix }}-focus" class="country-focus" data-prefix="{{ prefix }}">
+      <option value="all">All countries</option>
+      {% for c in evo.countries %}
+      <option value="{{ c.label }}">{{ c.label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="evo-legend">
+    {% for line in evo.lines %}
+    <input type="checkbox" class="evo-toggle" id="{{ prefix }}-{{ loop.index }}" data-country="{{ line.label }}" checked>
+    <label class="evo-legend-item" for="{{ prefix }}-{{ loop.index }}"
+           title="{{ line.label }} — last actual print {{ line.last_print or 'unknown' }}{% if line.is_stale %}, {{ line.months_stale }} months ago{% endif %}">
+      <i style="background:{{ line.color }};opacity:{{ line.opacity }};"></i>{{ line.label }}
+      <span class="evo-vintage{% if line.is_stale %} stale{% endif %}">{{ line.last_print or '—' }}{% if line.is_stale %} ⚠{% endif %}</span>
+    </label>
+    {% endfor %}
+  </div>
+  <div class="curve-wrap">
+    <svg class="curve" viewBox="0 0 480 250" xmlns="http://www.w3.org/2000/svg">
+      <line x1="{{ evo.bounds.x0 }}" y1="{{ evo.bounds.y0 }}" x2="{{ evo.bounds.x0 }}" y2="{{ evo.bounds.y1 }}" stroke="var(--line)" stroke-width="1"/>
+      <line x1="{{ evo.bounds.x0 }}" y1="{{ evo.bounds.y1 }}" x2="{{ evo.bounds.x1 }}" y2="{{ evo.bounds.y1 }}" stroke="var(--line)" stroke-width="1"/>
+      <line x1="{{ evo.bounds.x0 }}" y1="{{ (evo.bounds.y0 + evo.bounds.y1) / 2 }}" x2="{{ evo.bounds.x1 }}" y2="{{ (evo.bounds.y0 + evo.bounds.y1) / 2 }}" stroke="var(--line-soft)" stroke-width="1" stroke-dasharray="2,3"/>
+      <text x="{{ evo.bounds.x0 - 6 }}" y="{{ evo.bounds.y0 + 4 }}" text-anchor="end" class="curve-label">{{ evo.y_max }}{{ unit }}</text>
+      <text x="{{ evo.bounds.x0 - 6 }}" y="{{ evo.bounds.y1 }}" text-anchor="end" class="curve-label">{{ evo.y_min }}{{ unit }}</text>
+      <text x="{{ evo.bounds.x0 - 6 }}" y="{{ (evo.bounds.y0 + evo.bounds.y1) / 2 + 4 }}" text-anchor="end" class="curve-label">{{ evo.y_mid }}{{ unit }}</text>
+      {% for line in evo.lines %}
+      <g class="evo-line-group" data-for="{{ prefix }}-{{ loop.index }}">
+        <polyline points="{{ line.polyline }}" fill="none" stroke="{{ line.color }}" stroke-width="{{ line.stroke_width }}" opacity="{{ line.opacity }}"/>
+        {% for p in line.points %}
+        {% if p.real %}
+        <circle cx="{{ p.x }}" cy="{{ p.y }}" r="1.9" fill="{{ line.color }}" opacity="{{ line.opacity }}"><title>{{ line.label }} &middot; {{ p.cat }}: {{ p.value }}{{ unit }} (reported)</title></circle>
+        {% endif %}
+        {% endfor %}
+      </g>
+      {% endfor %}
+      {% for c in evo.categories %}
+      <text x="{{ c.x }}" y="{{ evo.bounds.y1 + 16 }}" text-anchor="middle" class="curve-label">{{ c.label }}</text>
+      {% endfor %}
+    </svg>
+  </div>
+  <p class="hm-note">
+    {{ evo.span_start }} &rarr; {{ evo.span_end }}, monthly. <b>A dot is an actual reported print</b>; the line
+    between dots is that print carried forward, which is what a quarterly series looks like between releases.
+    <b>Each line ends at its own last real observation</b>, so the right edge is that country's data vintage, not
+    today &mdash; a series that stops early has stopped publishing, it has not gone flat.
+    {% if evo.stale_countries %}<b>{{ evo.stale_countries | length }} of {{ evo.countries | length }}</b> series are
+    more than four months stale (vintages in the legend, red).{% endif %}
+    Hover any point for its exact month and value.{% if evo.missing_snapshots %} {{ evo.missing_snapshots | join(', ') }} had no data in this window.{% endif %}
+  </p>
+  {% endmacro %}
+
+  <section id="duration">
+    <h2 class="sec"><span class="dot"></span>Fixed income duration &amp; credit curve</h2>
+    <p class="sec-intro">Duration answers "how much does this move if rates move"; the credit curve (OAS by rating) answers "how much am I paid for default risk at each rung." Read them together against the Treasury curve above.</p>
+    <div class="deepdive">
+      <div class="panel">
+        <div class="panel-head"><h3>Duration matrix</h3><span class="panel-tag">Rate sensitivity</span></div>
+        <p class="panel-lede">Key Treasury/credit ETFs, sorted by effective duration (years) &mdash; approximate, per issuer fact sheets; not a live-pulled figure since no free API exposes it.</p>
+        <div class="tbl-scroll">
+          <table class="hm">
+            <thead><tr><th>Ticker</th><th>Name</th><th>Duration</th><th>1D</th><th>1W</th><th>1M</th><th>3M</th><th>YTD</th></tr></thead>
+            <tbody>
+{{ duration_rows }}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3>Credit curve</h3><span class="panel-tag">OAS by rating</span></div>
+        <p class="panel-lede">ICE BofA option-adjusted spread, AAA (tightest) to CCC (widest), pulled live from FRED.</p>
+        {{ credit_curve_bars }}
+      </div>
+    </div>
+
+    <h3 style="font-family:var(--serif);font-size:19px;font-weight:600;margin:30px 0 4px;">How much has this moved? &mdash; color-coded change matrix</h3>
+    <p class="sec-intro" style="margin-top:0;">Overlaid line charts hide exactly how many basis points moved at each horizon &mdash; this reads it directly: red = yields/spreads <i>up</i> (bond-negative) since that lookback, green = <i>down</i>, intensity = magnitude. Hover any cell for the two raw values; click a row in the deep-dive grid below for the full trail.</p>
+
+    <div class="deepdive">
+      <div class="panel">
+        <div class="panel-head"><h3>Yield curve</h3><span class="panel-tag">Δ in bp</span></div>
+        <div class="tbl-scroll">
+          <table class="hm chg-matrix">
+            <thead><tr><th>Tenor</th><th>Now</th><th>Δ<small>1W ago</small></th><th>Δ<small>1M ago</small></th><th>Δ<small>3M ago</small></th><th>Δ<small>1Y ago</small></th><th>Δ<small>3Y ago</small></th></tr></thead>
+            <tbody>
+{{ yield_change_matrix }}
+            </tbody>
+          </table>
+        </div>
+        <div class="chg-legend"><span>Red = yield rose (price fell) since that lookback &middot; Green = yield fell</span></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3>Credit curve</h3><span class="panel-tag">Δ in bp</span></div>
+        <div class="tbl-scroll">
+          <table class="hm chg-matrix">
+            <thead><tr><th>Rating</th><th>Now</th><th>Δ<small>1W ago</small></th><th>Δ<small>1M ago</small></th><th>Δ<small>3M ago</small></th><th>Δ<small>1Y ago</small></th><th>Δ<small>3Y ago</small></th></tr></thead>
+            <tbody>
+{{ credit_change_matrix }}
+            </tbody>
+          </table>
+        </div>
+        <div class="chg-legend"><span>Red = spread widened (more default risk priced in) &middot; Green = tightened</span></div>
+        {% if credit_curve_evolution.missing_snapshots %}
+        <p class="hm-note">{{ credit_curve_evolution.missing_snapshots | join(', ') }} unavailable &mdash; FRED's public history for this rating series starts {{ credit_curve_evolution.history_start }}.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if credit_history %}
+    <h3 style="font-family:var(--serif);font-size:19px;font-weight:600;margin:30px 0 4px;">Credit spreads by rating, full history</h3>
+    <p class="sec-intro" style="margin-top:0;">The 6-snapshot change matrix above answers "how much has it moved since 1Y ago"; this is the continuous walk between those points &mdash; AAA through CCC over this FRED mirror's full available history, on a <b>log scale</b>. Log because these rungs span two orders of magnitude (AAA near 40bp, CCC past 1,000bp): on a linear axis the whole investment-grade complex flattens onto the floor and its moves vanish. Equal vertical distance here is equal <i>proportional</i> widening. Hover a line to isolate it. {{ credit_history.span }}.</p>
+    <div class="panel">
+      {{ credit_lines(credit_history) }}
+    </div>
+    <p class="hm-note">Monthly-resampled OAS by rating, from the same FRED pull as the change matrix and shape-overlay above (history starts {{ credit_curve_evolution.history_start if credit_curve_evolution else '—' }}).</p>
+    {% endif %}
+
+    {% if yield_curve_evolution or credit_curve_evolution %}
+    <details class="dd" style="margin-top:20px;">
+      <summary>View full curve-shape overlay (line chart, all lookbacks)</summary>
+      <div class="deepdive" style="padding:16px;">
+        {% if yield_curve_evolution %}
+        <div class="panel">
+          <div class="panel-head"><h3>Yield curve shape</h3><span class="panel-tag">1W/1M/3M/1Y/3Y ago &rarr; now</span></div>
+          {{ evolution_chart(yield_curve_evolution, '%', 'yc') }}
+          <p class="hm-note">As of {{ yield_curve_evolution.asof }}.</p>
+        </div>
+        {% endif %}
+        {% if credit_curve_evolution %}
+        <div class="panel">
+          <div class="panel-head"><h3>Credit curve shape</h3><span class="panel-tag">1W/1M/3M/1Y/3Y ago &rarr; now</span></div>
+          {{ evolution_chart(credit_curve_evolution, 'bp', 'cc') }}
+          <p class="hm-note">As of {{ credit_curve_evolution.asof }}.</p>
+        </div>
+        {% endif %}
+      </div>
+    </details>
+    {% endif %}
+
+    <details class="dd" style="margin-top:10px;">
+      <summary>Per-tenor / per-rating deep dive (click any to expand its full value trail)</summary>
+      <div style="padding:16px;">
+        <p class="panel-lede" style="margin-top:0;">Yield curve, by tenor:</p>
+        <div class="dd-wrap">{{ yield_deep_dive }}</div>
+        <p class="panel-lede">Credit curve, by rating:</p>
+        <div class="dd-wrap">{{ credit_deep_dive }}</div>
+      </div>
+    </details>
+
+    <p class="hm-note" style="margin-top:14px;">{{ duration_note }}</p>
+  </section>
+
+  <section id="macro">
+    <h2 class="sec"><span class="dot"></span>Macro panel &mdash; FRED, pulled direct</h2>
+    <p class="sec-intro">Same sourcing discipline as the heatmap: these series come straight from FRED's public data feed, not restated from a news article, each with its own as-of date and one-month change so you can see how stale or fresh each number is.</p>
+    <div class="macro-grid">
+      {{ macro_tiles }}
+    </div>
+    <p class="hm-note" style="margin-top:14px;">{{ macro_note | safe }}</p>
+  </section>
+
+  {% if has_global_macro %}
+  <section id="globalmacro">
+    <h2 class="sec"><span class="dot"></span>Global macro matrix &mdash; rates, inflation, growth by country</h2>
+    <p class="sec-intro">Seven major-economy central banks, cross-cut by lookback horizon (1M through 3Y), pulled live from FRED's OECD-sourced series. Rate and inflation panels show the <i>change</i> since each horizon (bp / pp moved); output and consumption panels show the QoQ growth print that prevailed <i>as of</i> each horizon &mdash; a trajectory of the growth rate itself, so you can see who's accelerating vs. decelerating.</p>
+
+    <div class="deepdive">
+      <div class="panel">
+        <div class="panel-head"><h3>Policy rate</h3><span class="panel-tag">Δ in bp</span></div>
+        <p class="panel-lede">Red = rate rose (tightened) since that lookback &middot; Green = fell (eased).</p>
+        <div class="tbl-scroll">
+          <table class="hm chg-matrix">
+            <thead><tr><th>Country</th><th>Now</th>{% for h in ['1M','2M','3M','6M','12M','2Y','3Y'] %}<th>Δ<small>{{ h }}</small></th>{% endfor %}</tr></thead>
+            <tbody>
+{{ global_rate_matrix }}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3>CPI YoY</h3><span class="panel-tag">Δ in pp</span></div>
+        <p class="panel-lede">Red = inflation rose since that lookback &middot; Green = disinflation.</p>
+        <div class="tbl-scroll">
+          <table class="hm chg-matrix">
+            <thead><tr><th>Country</th><th>Now</th>{% for h in ['1M','2M','3M','6M','12M','2Y','3Y'] %}<th>Δ<small>{{ h }}</small></th>{% endfor %}</tr></thead>
+            <tbody>
+{{ global_inflation_matrix }}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="deepdive" style="margin-top:24px;">
+      <div class="panel">
+        <div class="panel-head"><h3>Output growth</h3><span class="panel-tag">GDP, QoQ %</span></div>
+        <p class="panel-lede">Growth print as of each lookback (level, not a delta) &mdash; green = expanding, red = contracting. Quarterly data, so 1M/2M columns repeat the latest print until the next release.</p>
+        <div class="tbl-scroll">
+          <table class="hm chg-matrix">
+            <thead><tr><th>Country</th><th>Now</th>{% for h in ['1M','2M','3M','6M','12M','2Y','3Y'] %}<th>{{ h }} ago</th>{% endfor %}</tr></thead>
+            <tbody>
+{{ global_output_matrix }}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3>Output growth</h3><span class="panel-tag">Δ in pp &mdash; accel/decel</span></div>
+        <p class="panel-lede">Same series, framed like the rate/inflation matrices: now vs. horizon-ago. Green = growth accelerated since that lookback, red = decelerated (or turned more negative).</p>
+        <div class="tbl-scroll">
+          <table class="hm chg-matrix">
+            <thead><tr><th>Country</th><th>Now</th>{% for h in ['1M','2M','3M','6M','12M','2Y','3Y'] %}<th>Δ<small>{{ h }}</small></th>{% endfor %}</tr></thead>
+            <tbody>
+{{ global_output_change_matrix }}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="deepdive" style="margin-top:24px;">
+      <div class="panel full">
+        <div class="panel-head"><h3>Consumption growth</h3><span class="panel-tag">Household spend, QoQ %</span></div>
+        <p class="panel-lede">Same read as output growth's level matrix, for household final consumption expenditure.</p>
+        <div class="tbl-scroll">
+          <table class="hm chg-matrix">
+            <thead><tr><th>Country</th><th>Now</th>{% for h in ['1M','2M','3M','6M','12M','2Y','3Y'] %}<th>{{ h }} ago</th>{% endfor %}</tr></thead>
+            <tbody>
+{{ global_consumption_matrix }}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    {% if inflation_trajectory or output_trajectory %}
+    <h3 style="font-family:var(--serif);font-size:19px;font-weight:600;margin:30px 0 4px;">Trend view &mdash; the reported path, with each series' own vintage</h3>
+    <p class="sec-intro" style="margin-top:0;">
+      The matrices above read cell-by-cell at seven fixed lookbacks; these plot the reported monthly path instead,
+      so a print reads in the context of the path that produced it. Two things make this honest rather than
+      decorative: <b>dots mark actual prints</b> and the line between them is the carry-forward, and <b>each line
+      stops at its own last observation</b> instead of being extended to today. These are OECD series on FRED and
+      several of them lag by many months &mdash; drawing them to today's date produced a long flat line that
+      looked like "inflation was constant" when it actually meant "nobody has published since." The vintage next
+      to each country in the legend is that series' last real print; red means it is more than four months stale.
+      Use "Focus" to isolate one country, then compare it against the rest of the panel.
+    </p>
+    <div class="deepdive">
+      {% if inflation_trajectory %}
+      <div class="panel">
+        <div class="panel-head"><h3>Inflation trend</h3><span class="panel-tag">CPI YoY, by country</span></div>
+        {{ country_history_chart(inflation_trajectory, '%', 'inftraj') }}
+      </div>
+      {% endif %}
+      {% if output_trajectory %}
+      <div class="panel">
+        <div class="panel-head"><h3>Output growth trend</h3><span class="panel-tag">GDP QoQ %, by country</span></div>
+        {{ country_history_chart(output_trajectory, '%', 'outtraj') }}
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <p class="hm-note" style="margin-top:14px;">Policy rate proxy: OECD "immediate rates" (interbank/call money) series, the closest free FRED equivalent to each bank's official rate outside the US. CPI is headline YoY (HICP for the euro area). Output/consumption are OECD quarterly national accounts, seasonally adjusted, expressed as growth over the previous period.</p>
+  </section>
+  {% endif %}
+
+  {% if has_labor_market %}
+  <section id="labormarket">
+    <h2 class="sec"><span class="dot"></span>US labor market</h2>
+    <p class="sec-intro">The number the Fed's dual mandate hinges on right now &mdash; live-pulled headline rates plus a 12-month payrolls heatmap, paired with this week's reporting on what's actually happening underneath the headline print.</p>
+
+    <div class="panel full">
+      <h4>Analytics &mdash; live from FRED</h4>
+      <div class="macro-grid">
+        {{ labor_market_tiles }}
+      </div>
+      <h4 style="margin-top:20px;">Nonfarm payrolls, monthly change &mdash; last 12 months</h4>
+      <div class="tbl-scroll">
+        {{ payrolls_heatmap }}
+      </div>
+    </div>
+
+    {% if labor_market_news %}
+    <div class="panel full" style="margin-top:20px;">
+      <h4>What the reporting says</h4>
+      <p>{{ labor_market_news.intro }}</p>
+      <div class="stat-row">
+        {% for s in labor_market_news.stats %}
+        <div class="stat"><div class="k">{{ s.k }}</div><div class="v">{{ s.v }} <small>{{ s.sub }}</small></div></div>
+        {% endfor %}
+      </div>
+      {% for p in labor_market_news.paragraphs %}
+      <p>{{ p | safe }}</p>
+      {% endfor %}
+      <div class="read-line"><b>Read</b>{{ labor_market_news.read | safe }}</div>
+    </div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  <section id="centralbanks">
+    <h2 class="sec"><span class="dot"></span>Central banks</h2>
+    <p class="sec-intro">Four major central banks, four different postures this month &mdash; the divergence itself is a market driver (see USD/JPY above).</p>
+    <div class="cb-grid">
+      {% for cb in central_banks %}
+      <div class="cb-card">
+        <div class="flag">{{ cb.flag }}</div>
+        <h4>{{ cb.name }}</h4>
+        <div class="rate">{{ cb.rate }}</div>
+        {% for para in cb.paragraphs %}
+        <p>{{ para | safe }}</p>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section id="cbrates">
+    <h2 class="sec"><span class="dot"></span>CB rates matrix &mdash; policy rate vs. inflation vs. growth</h2>
+    <p class="sec-intro">{{ cb_matrix.intro }}</p>
+    <div class="cb-quad-wrap">
+      <svg class="cbquad" viewBox="0 0 480 300" xmlns="http://www.w3.org/2000/svg">
+        <line x1="60" y1="30" x2="60" y2="260" stroke="var(--line)" stroke-width="1"/>
+        <line x1="60" y1="260" x2="440" y2="260" stroke="var(--line)" stroke-width="1"/>
+        <line x1="{{ cb_matrix.mid_x }}" y1="30" x2="{{ cb_matrix.mid_x }}" y2="260" stroke="var(--line-soft)" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="60" y1="{{ cb_matrix.mid_y }}" x2="440" y2="{{ cb_matrix.mid_y }}" stroke="var(--line-soft)" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="60" y="20" class="cbquad-tick">{{ cb_matrix.inflation_axis.max }}%</text>
+        <text x="60" y="272" class="cbquad-tick">{{ cb_matrix.inflation_axis.min }}%</text>
+        <text x="64" y="278" class="cbquad-tick">{{ cb_matrix.growth_axis.min }}%</text>
+        <text x="420" y="278" class="cbquad-tick">{{ cb_matrix.growth_axis.max }}%</text>
+        <text x="250" y="292" text-anchor="middle" class="cbquad-axis-label">Growth (GDP/PMI proxy) &rarr;</text>
+        <text x="18" y="145" text-anchor="middle" class="cbquad-axis-label" transform="rotate(-90 18 145)">Inflation (CPI YoY) &rarr;</text>
+        {% for b in cb_matrix.banks %}
+        <circle cx="{{ b.x }}" cy="{{ b.y }}" r="{{ b.r }}" fill="color-mix(in srgb, var(--accent) 35%, transparent)" stroke="var(--accent)" stroke-width="1.5"/>
+        <text x="{{ b.x }}" y="{{ b.y - b.r - 6 }}" text-anchor="middle" class="cbquad-name">{{ b.short }}</text>
+        <text x="{{ b.x }}" y="{{ b.y + 3 }}" text-anchor="middle" class="cbquad-rate">{{ b.policy_rate_pct }}%</text>
+        {% endfor %}
+      </svg>
+    </div>
+    <div class="hm-legend"><span>Bubble size = policy rate level; dashed lines = median growth / inflation across the four banks</span></div>
+
+    <div class="deepdive" style="margin:18px 0;">
+      <div class="panel">
+        <div class="panel-head"><h3>Real rate</h3><span class="panel-tag">Policy &minus; CPI YoY</span></div>
+        {% for b in cb_matrix.real_rate_bars %}
+        <div class="cbcmp-row">
+          <div class="cbcmp-label">{{ b.short }}</div>
+          <div class="cbcmp-bar-track">
+            <div class="cbcmp-bar cbcmp-bar-{{ b.side }}" style="width:{{ b.pct_width }}%;background:color-mix(in srgb, var(--{{ b.token }}) 60%, transparent);"></div>
+            <div class="cbcmp-zero"></div>
+          </div>
+          <div class="cbcmp-value">{{ '%.2f' % b.value }}%</div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3>Carry vs Fed</h3><span class="panel-tag">Policy rate differential</span></div>
+        {% for b in cb_matrix.carry_vs_fed_bars %}
+        <div class="cbcmp-row">
+          <div class="cbcmp-label">{{ b.short }}</div>
+          <div class="cbcmp-bar-track">
+            <div class="cbcmp-bar cbcmp-bar-{{ b.side }}" style="width:{{ b.pct_width }}%;background:color-mix(in srgb, var(--{{ b.token }}) 60%, transparent);"></div>
+            <div class="cbcmp-zero"></div>
+          </div>
+          <div class="cbcmp-value">{{ '%+.2f' % b.value }}%</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="tbl-scroll cb-matrix-table">
+      <table>
+        <thead><tr><th>Bank</th><th>Policy rate</th><th>Real rate</th><th>CPI YoY</th><th>Growth proxy</th><th>Stance</th></tr></thead>
+        <tbody>
+          {% for b in cb_matrix.banks %}
+          <tr>
+            <td class="metric">{{ b.short }}</td>
+            <td class="lvl">{{ b.policy_rate_pct }}%</td>
+            <td class="lvl">{{ b.real_rate_pct }}%</td>
+            <td class="lvl">{{ b.cpi_yoy_pct }}%</td>
+            <td class="lvl">{{ b.growth_pct }}% <small style="color:var(--ink-faint);font-family:var(--sans);">{{ b.growth_label }}</small></td>
+            <td><span class="chip {{ b.stance_chip_class }}">{{ b.stance }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p class="hm-note">{{ cb_matrix.note }}</p>
+  </section>
+
+  <section id="credit">
+    <h2 class="sec"><span class="dot"></span>Private credit &amp; AI financing &mdash; the live stress case</h2>
+    <p class="sec-intro">{{ credit_section.intro }}</p>
+    <div class="panel full">
+      <h4>The mechanism, in numbers</h4>
+      <div class="stat-row">
+        {% for s in credit_section.stats %}
+        <div class="stat"><div class="k">{{ s.k }}</div><div class="v">{{ s.v }} <small>{{ s.sub }}</small></div></div>
+        {% endfor %}
+      </div>
+
+      <h4>Named institutional warnings</h4>
+      {% for w in credit_section.warnings %}
+      <p>{{ w | safe }}</p>
+      {% endfor %}
+
+      <div class="read-line"><b>Read</b>{{ credit_section.read | safe }}</div>
+    </div>
+  </section>
+
+  <section id="stagflation">
+    <h2 class="sec"><span class="dot"></span>The stagflation debate &mdash; named views, both sides</h2>
+    <p class="sec-intro">{{ stagflation.intro }}</p>
+    <div class="debate">
+      <div class="debate-col concerned">
+        <h4>Concerned</h4>
+        {% for q in stagflation.concerned %}
+        <div class="quote">
+          <blockquote>{{ q.text | safe }}</blockquote>
+          <cite>&mdash; <b>{{ q.name }}</b>, {{ q.title }}</cite>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="debate-col cautious">
+        <h4>Cautious</h4>
+        <p style="font-size:13.5px;color:var(--ink-soft);">{{ stagflation.cautious_text }}</p>
+        <div class="caveat"><b>Sourcing note</b>{{ stagflation.caveat }}</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="playbook">
+    <h2 class="sec"><span class="dot"></span>Playbook lens</h2>
+    <div class="playbook-grid">
+      {% for t in playbook %}
+      <div class="theme-card">
+        <span class="status {{ t.status_class }}">{{ t.status_text }}</span>
+        <h4>{{ t.title }}</h4>
+        <p>{{ t.text }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section id="watch">
+    <h2 class="sec"><span class="dot"></span>Watch list</h2>
+    <ul class="flat-list">
+      {% for w in watchlist %}
+      <li><span class="marker">&rarr;</span>{{ w | safe }}</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <footer id="sources">
+    <p>Sources &mdash; numbered as cited above; quotes preserved verbatim with named attribution per this session's sourcing standard</p>
+    <div class="src-grid">
+      {% for s in sources %}
+      <a href="{{ s.url }}" target="_blank" rel="noopener"><span>{{ s.n }}</span>{{ s.label }}</a>
+      {% endfor %}
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // Evolution-chart legend checkboxes (yield-curve / credit-curve shape
+  // overlays): toggle the matching <g class="evo-line-group"> on/off.
+  // Static boilerplate generated by the template, not day-specific content --
+  // one listener, driven entirely by the data-for/id pairing the macro emits.
+  document.querySelectorAll('.evo-toggle').forEach(function (cb) {
+    cb.addEventListener('change', function () {
+      document.querySelectorAll('.evo-line-group[data-for="' + cb.id + '"]').forEach(function (g) {
+        g.style.display = cb.checked ? '' : 'none';
+      });
+    });
+  });
+
+  // Country-history-chart "Focus" dropdown: drives the same evo-toggle
+  // checkboxes above by simulated click, so the one listener already wired
+  // to them handles both the SVG line visibility and the legend
+  // strikethrough state -- no separate rendering path to keep in sync.
+  document.querySelectorAll('.country-focus').forEach(function (sel) {
+    sel.addEventListener('change', function () {
+      var prefix = sel.dataset.prefix;
+      document.querySelectorAll('.evo-toggle[id^="' + prefix + '-"]').forEach(function (cb) {
+        var shouldCheck = sel.value === 'all' || cb.dataset.country === sel.value;
+        if (cb.checked !== shouldCheck) {
+          cb.checked = shouldCheck;
+          cb.dispatchEvent(new Event('change'));
+        }
+      });
+    });
+  });
+
+  // Sticky-nav scroll spy. Resolved in document order by finding the last
+  // section whose top has crossed the trigger line, which is order- and
+  // visibility-independent; at the very bottom of the page the final sections
+  // can never reach that line, so the last one is selected explicitly.
+  (function () {
+    var toc = document.getElementById('toc');
+    if (!toc) { return; }
+    var links = {};
+    toc.querySelectorAll('a[data-spy]').forEach(function (a) { links[a.dataset.spy] = a; });
+    // Not just <section>: the sources block is a <footer>, so select every
+    // element the nav actually points at rather than assuming a tag.
+    var sections = Object.keys(links)
+      .map(function (id) { return document.getElementById(id); })
+      .filter(Boolean)
+      .sort(function (a, b) { return a.getBoundingClientRect().top - b.getBoundingClientRect().top; });
+    var ticking = false, activeId = null;
+
+    function update() {
+      ticking = false;
+      var line = toc.offsetHeight + 40;
+      var current = null, first = null, last = null;
+      for (var i = 0; i < sections.length; i++) {
+        var sec = sections[i];
+        if (first === null) { first = sec.id; }
+        last = sec.id;
+        if (sec.getBoundingClientRect().top <= line) { current = sec.id; }
+      }
+      var atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+      var next = atBottom ? last : (current || first);
+      if (next === activeId) { return; }
+      activeId = next;
+      Object.keys(links).forEach(function (key) { links[key].classList.toggle('active', key === next); });
+      // Keep the active chip visible in the horizontally-scrolling nav.
+      var el = links[next];
+      if (el && el.offsetLeft < toc.scrollLeft + 40) {
+        toc.scrollTo({ left: Math.max(el.offsetLeft - 60, 0), behavior: 'smooth' });
+      } else if (el && el.offsetLeft + el.offsetWidth > toc.scrollLeft + toc.clientWidth - 40) {
+        toc.scrollTo({ left: el.offsetLeft + el.offsetWidth - toc.clientWidth + 60, behavior: 'smooth' });
+      }
+    }
+
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    update();
+
+    var totop = document.createElement('button');
+    totop.type = 'button';
+    totop.className = 'totop';
+    totop.innerHTML = '&uarr; Top';
+    document.body.appendChild(totop);
+    totop.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    window.addEventListener('scroll', function () {
+      totop.classList.toggle('show', window.scrollY > 700);
+    }, { passive: true });
+  })();
+</script>

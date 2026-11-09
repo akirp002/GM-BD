@@ -29,19 +29,21 @@ the durable knowledge file so the work remains searchable and reproducible.
 
 ```bash
 D=$(date +%F)
-python3 briefs/scripts/build_semiconductor_brief.py "$D"        # 1. pull data
-python3 briefs/scripts/synthesize_semiconductor.py "$D"         # 2. LLM synthesis (needs ANTHROPIC_API_KEY)
-python3 briefs/scripts/build_semiconductor_brief.py "$D" --render-only   # 3. render
+python3 briefs/scripts/build_semiconductor_brief.py "$D" && \
+python3 briefs/scripts/synthesize_semiconductor.py "$D" --packet-only && \
+(set -o pipefail; cat "briefs/data/$D-semiconductor-prompt.md" \
+     "briefs/data/$D-semiconductor-evidence.json" |
+  claude -p "Follow the SYSTEM and USER instructions on stdin. Return only the requested raw JSON object." \
+    --output-format text > "briefs/data/$D-semiconductor-synthesis.json") && \
+python3 briefs/scripts/synthesize_semiconductor.py "$D" \
+  --ingest "briefs/data/$D-semiconductor-synthesis.json" && \
+python3 briefs/scripts/build_semiconductor_brief.py "$D" --render-only
 ```
 
-No API key? Use a Claude Code session as the analyst:
-
-```bash
-python3 briefs/scripts/synthesize_semiconductor.py "$D" --packet-only   # writes <D>-semiconductor-evidence.json + prompt
-# Claude reads the packet, writes a synthesis JSON following the schema in
-# the SYSTEM prompt, then:
-python3 briefs/scripts/synthesize_semiconductor.py "$D" --ingest my-synthesis.json
-```
+The LLM step uses the locally authenticated Claude Code CLI (`claude -p`); it
+does not require an `ANTHROPIC_API_KEY` or the Anthropic Python SDK. The
+`--packet-only` and `--ingest` options also allow a synthesis to be generated
+and ingested separately.
 
 What step 1 pulls: three news windows (week, 8-30 days, 31-95 days) with
 stable citation ids and a durable `briefs/semiconductors/headline_archive.jsonl`

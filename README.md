@@ -93,12 +93,18 @@ market-mechanics framework, and glossary.
 ```bash
 D=$(date +%F)
 python3 briefs/scripts/build_semiconductor_brief.py "$D" && \
-python3 briefs/scripts/synthesize_semiconductor.py "$D" && \
+python3 briefs/scripts/synthesize_semiconductor.py "$D" --packet-only && \
+(set -o pipefail; cat "briefs/data/$D-semiconductor-prompt.md" \
+     "briefs/data/$D-semiconductor-evidence.json" |
+  claude -p "Follow the SYSTEM and USER instructions on stdin. Return only the requested raw JSON object." \
+    --output-format text > "briefs/data/$D-semiconductor-synthesis.json") && \
+python3 briefs/scripts/synthesize_semiconductor.py "$D" \
+  --ingest "briefs/data/$D-semiconductor-synthesis.json" && \
 python3 briefs/scripts/build_semiconductor_brief.py "$D" --render-only
 ```
 
-The synthesis step requires `ANTHROPIC_API_KEY` and the `anthropic` package
-(`pip install anthropic`).
+This workflow uses the locally authenticated Claude Code CLI (`claude -p`); it
+does not require an `ANTHROPIC_API_KEY` or the Anthropic Python SDK.
 
 The synthesis step hands the model a computed evidence packet (sub-industry
 returns, cross-segment correlations and shifts, rates/credit moves, headlines

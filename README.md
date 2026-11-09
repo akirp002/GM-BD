@@ -92,10 +92,13 @@ market-mechanics framework, and glossary.
 
 ```bash
 D=$(date +%F)
-python3 briefs/scripts/build_semiconductor_brief.py "$D"               # data pull
-python3 briefs/scripts/synthesize_semiconductor.py "$D"                # LLM synthesis (ANTHROPIC_API_KEY; `pip install anthropic`)
+python3 briefs/scripts/build_semiconductor_brief.py "$D" && \
+python3 briefs/scripts/synthesize_semiconductor.py "$D" && \
 python3 briefs/scripts/build_semiconductor_brief.py "$D" --render-only
 ```
+
+The synthesis step requires `ANTHROPIC_API_KEY` and the `anthropic` package
+(`pip install anthropic`).
 
 The synthesis step hands the model a computed evidence packet (sub-industry
 returns, cross-segment correlations and shifts, rates/credit moves, headlines

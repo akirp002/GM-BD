@@ -29,10 +29,13 @@ the durable knowledge file so the work remains searchable and reproducible.
 
 ```bash
 D=$(date +%F)
-python3 briefs/scripts/build_semiconductor_brief.py "$D"        # 1. pull data
-python3 briefs/scripts/synthesize_semiconductor.py "$D"         # 2. LLM synthesis (needs ANTHROPIC_API_KEY)
-python3 briefs/scripts/build_semiconductor_brief.py "$D" --render-only   # 3. render
+python3 briefs/scripts/build_semiconductor_brief.py "$D" && \
+python3 briefs/scripts/synthesize_semiconductor.py "$D" && \
+python3 briefs/scripts/build_semiconductor_brief.py "$D" --render-only
 ```
+
+The LLM step requires `ANTHROPIC_API_KEY` and the `anthropic` package
+(`pip install anthropic`).
 
 No API key? Use a Claude Code session as the analyst:
 

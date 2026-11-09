@@ -82,6 +82,37 @@ reproducible output, not source (a few samples are kept in `examples/` instead).
   sector-rotation and credit-curve streamgraphs, global macro matrix, and (when a
   news pull exists for that day) a newsroom section and the computed news analysis.
 
+## Semiconductor technology & market brief
+
+The semiconductor research product is an independent pipeline: it does not modify
+the morning brief, general news pull, or their HTML outputs. It has a dedicated
+focused RSS search, semiconductor equity tape, dated research file, and standalone
+HTML page; the tracked knowledge base provides the persistent industry map,
+market-mechanics framework, and glossary.
+
+```bash
+D=$(date +%F)
+python3 briefs/scripts/build_semiconductor_brief.py "$D"               # data pull
+python3 briefs/scripts/synthesize_semiconductor.py "$D"                # LLM synthesis (ANTHROPIC_API_KEY; `pip install anthropic`)
+python3 briefs/scripts/build_semiconductor_brief.py "$D" --render-only
+```
+
+The synthesis step hands the model a computed evidence packet (sub-industry
+returns, cross-segment correlations and shifts, rates/credit moves, headlines
+in week/month/quarter windows, prior theses) and requires cited, falsifiable
+themes; ids it cites are validated. Without an API key use `--packet-only` and
+`--ingest` (see `semiconductor-brief.md`). The page adds interactive
+sub-industry comparison, a correlation explorer, and a rates/credit lab.
+
+Outputs are `briefs/data/<D>-semiconductor-data.json`,
+`<D>-semiconductor-evidence.json`, `briefs/data/<D>-semiconductor-research.json`, and
+`briefs/<D>-semiconductor.html`. The page uses its own template
+(`briefs/templates/semiconductor.html.j2`) and tracked reference
+(`briefs/semiconductors/knowledge.json`). It presents adjusted returns and
+price-times-volume activity as descriptive proxies only—not ETF flows,
+order-book depth, or positioning. See [`semiconductor-brief.md`](semiconductor-brief.md)
+for the research checklist, source rules, and the dated research-file schema.
+
 ## Repository layout
 
 ```
@@ -89,11 +120,13 @@ brief.md                  Task specification: the research checklist and editori
                            rules a research pass follows when writing narrative.json.
 playbook.md               The macro/cross-asset investment framework used to tag
                            stories to structural themes (referenced by brief.md).
+semiconductor-brief.md    Separate semiconductor research workflow and evidence rules.
 briefs/
   scripts/                All pipeline code (see above).
-  templates/               Jinja2 templates for the dashboard and news reader.
-  tests/                   Unit tests (no network) for fetch_news.py's parsing,
-                           filtering, and windowing logic.
+  templates/              Jinja2 templates for the dashboards, news reader, and
+                           semiconductor research page.
+  semiconductors/          Tracked semiconductor industry and market-mechanics knowledge base.
+  tests/                   Unit tests (no network) for the fetchers and render helpers.
   data/                    Generated JSON/CSV data pulls (gitignored).
   *.md, *.html             Generated daily briefs and dashboards (gitignored).
 examples/                  Checked-in samples of the generated output.

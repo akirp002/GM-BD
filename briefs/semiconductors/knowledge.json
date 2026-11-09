@@ -1,0 +1,119 @@
+{
+  "title": "Semiconductor industry and market-structure field guide",
+  "description": "A maintained reference for mapping the semiconductor value chain, its operating economics, and the market signals that matter. Update stable concepts here; put dated developments in each day's research file.",
+  "source_hierarchy": [
+    "Company filings, earnings releases, and investor-relations materials for company-specific figures and guidance.",
+    "WSTS and SIA for published industry sales and forecast series; preserve each source's scope and vintage.",
+    "SEMI for equipment, fab capacity, and materials context; distinguish orders, billings, and shipments.",
+    "Government export-control, subsidy, and trade publications for policy facts.",
+    "News headlines for discovery and attribution only until claims are confirmed in primary sources."
+  ],
+  "chain_stages": [
+    {
+      "id": "design",
+      "name": "Architecture, IP & chip design",
+      "description": "Companies define chip architecture, license reusable IP, and design products for specific workloads. Fabless firms outsource wafer production; some integrated device makers (IDMs) also fabricate chips.",
+      "economics": "R&D, software ecosystems, product mix, design wins, and customer concentration shape returns. A design win is not the same as a shipped unit or recognized revenue.",
+      "watch": ["Product launches and benchmark-qualified performance per watt", "Customer qualification, design-win conversion, and revenue concentration", "R&D intensity, gross margin, and inventory"],
+      "risk": "Roadmaps, software lock-in, export rules, customer-funded development, and rapid substitution can change the addressable market."
+    },
+    {
+      "id": "manufacturing",
+      "name": "Wafer fabrication: foundries and IDMs",
+      "description": "Foundries sell manufacturing capacity to external customers; IDMs design and manufacture their own products and may also sell foundry services.",
+      "economics": "Revenue depends on wafer starts, node and product mix, utilization, yields, and wafer pricing. Capacity is capital intensive and takes years to plan and qualify.",
+      "watch": ["Capex and capacity plans by node and geography", "Utilization, wafer pricing, yield commentary, and customer prepayments", "Depreciation, cash flow, and node-specific demand"],
+      "risk": "High fixed costs amplify utilization changes. Announced capacity, installed equipment, qualified capacity, and customer-usable output are different milestones."
+    },
+    {
+      "id": "equipment",
+      "name": "Wafer-fab equipment, process control & materials",
+      "description": "Lithography, deposition, etch, inspection, metrology, process-control tools, and specialty materials enable wafer production.",
+      "economics": "Tool intensity, replacement cycles, installed-base service revenue, customer capex, and export licensing drive orders and margins.",
+      "watch": ["Bookings, billings, backlog, cancellations, and book-to-bill definitions", "Foundry and memory capex by customer and node", "Service revenue and export-license exposure"],
+      "risk": "Backlog can shift or be cancelled; a tool shipment is not equivalent to productive wafer capacity."
+    },
+    {
+      "id": "memory",
+      "name": "Memory: DRAM, NAND and high-bandwidth memory",
+      "description": "Memory is often sold into cyclical markets. HBM uses stacked DRAM and advanced packaging to meet bandwidth and power requirements for accelerators.",
+      "economics": "Bit supply growth, utilization, yields, inventory, contract pricing, product mix, and capex interact. HBM has different qualification and packaging constraints than commodity memory.",
+      "watch": ["DRAM, NAND, and HBM pricing separately", "Supplier inventory, customer inventory, and inventory days", "HBM capacity, yields, qualification, and packaging allocation"],
+      "risk": "Strong pricing or HBM demand does not establish that all memory products are tight or that current margins are durable."
+    },
+    {
+      "id": "packaging",
+      "name": "Advanced packaging, substrates & OSAT",
+      "description": "Foundries and outsourced semiconductor assembly and test (OSAT) providers assemble dies, interposers, substrates, and memory into finished packages.",
+      "economics": "Package complexity, substrate availability, thermal design, test time, yields, and qualified capacity can constrain system shipments even when wafer supply is available.",
+      "watch": ["Advanced-packaging capacity and customer allocation", "Substrate lead times, yields, and test bottlenecks", "Wafer-to-package-to-system shipment conversion"],
+      "risk": "A reported packaging bottleneck is product- and customer-specific; distinguish capacity plans from qualified output."
+    },
+    {
+      "id": "systems",
+      "name": "Distribution, systems & end markets",
+      "description": "Distributors, contract manufacturers, and system companies turn components into servers, phones, vehicles, industrial controls, and other end products.",
+      "economics": "Sell-in to channels can diverge from sell-through to end users. Design wins, system build plans, and finished-goods inventory help reconcile demand with chip shipments.",
+      "watch": ["End-market unit volumes and system build plans", "Distributor and customer inventory, cancellations, and lead times", "Sell-in versus sell-through and revenue-recognition timing"],
+      "risk": "A supply-chain order is not always final demand; double ordering and inventory digestion can reverse quickly."
+    }
+  ],
+  "market_mechanics": [
+    {
+      "name": "Inventory and cycle",
+      "mechanism": "A long, capital-intensive supply chain can overshoot demand. Orders, distributor inventory, customer inventory, fab utilization, and spot/contract prices turn at different times.",
+      "watch": ["Company and channel inventory in dollars and days", "Sequential and year-over-year sales, with seasonality stated", "Utilization, lead times, cancellations, and pricing by product"],
+      "pitfall": "Do not treat one company's inventory or a headline shipment forecast as a sector-wide cycle measure."
+    },
+    {
+      "name": "Capacity, yield and bottlenecks",
+      "mechanism": "Nominal wafer capacity is only useful when the process, yield, packaging, testing, and customer qualification are ready for a particular product.",
+      "watch": ["Capex versus depreciation and installed capacity", "Yield and qualification milestones", "Constraint location: wafer, HBM, packaging, substrate, power, or system integration"],
+      "pitfall": "A bottleneck can migrate; adding capacity at one stage may not raise system shipments."
+    },
+    {
+      "name": "Contracting, allocation and customer concentration",
+      "mechanism": "Long-term agreements, prepayments, allocation, take-or-pay terms, and concentrated buyers can shape visibility, pricing power, and downside if plans change.",
+      "watch": ["Backlog and remaining performance obligations definitions", "Customer concentration and cancellation terms in filings", "Prepayments, commitments, and cash-conversion cycle"],
+      "pitfall": "Backlog and announced orders are not guaranteed revenue; compare contract terms, delivery timing, and recognized sales."
+    },
+    {
+      "name": "ETF concentration, breadth and index flows",
+      "mechanism": "Semiconductor benchmarks can be concentrated in a small set of large companies. Index weights, rebalances, creations/redemptions, and benchmark demand can influence constituent flows.",
+      "watch": ["ETF holdings and weight changes from issuer files", "Equal-weight versus cap-weight performance and constituent breadth", "Fund creations/redemptions and benchmark rebalances"],
+      "pitfall": "Price × share volume is not ETF flow; market capitalization is not liquidity; headline breadth is not causal attribution."
+    },
+    {
+      "name": "Options positioning and dealer hedging",
+      "mechanism": "Options hedging may amplify or dampen short-horizon moves depending on dealer inventory, strike, expiry, and underlying price changes.",
+      "watch": ["Open interest and volume by strike/expiry", "Implied volatility and skew versus realized volatility", "Timestamped, methodology-disclosed dealer gamma estimates"],
+      "pitfall": "Open interest does not reveal who is long or short; vendor gamma estimates are model-dependent and should not be stated as observed dealer positions."
+    },
+    {
+      "name": "Liquidity, volatility and rates",
+      "mechanism": "Highly valued growth equities can react to real rates, earnings revisions, volatility, and liquidity conditions. Intraday execution costs depend on spread, depth, and volatility.",
+      "watch": ["Real yields and broad risk appetite alongside sector returns", "Bid-ask spread, depth, turnover, and volatility from timestamped market data", "Earnings revisions and valuation against growth assumptions"],
+      "pitfall": "Daily closes and free quote volume cannot measure order-book depth, market impact, or the cause of a price move."
+    },
+    {
+      "name": "Policy and geographic concentration",
+      "mechanism": "Export controls, subsidies, tariffs, and restrictions on equipment or end-customer access alter addressable demand, location choices, and supply-chain economics.",
+      "watch": ["Primary government text and effective dates", "Company-specific revenue exposure and license status", "Capex location, construction progress, and customer qualification"],
+      "pitfall": "Separate enacted rules from proposals, reported discussions, and company-specific exemptions."
+    }
+  ],
+  "glossary": [
+    {"term": "Fabless", "definition": "A chip designer that outsources most or all wafer fabrication to foundries.", "signal": "Track product mix, design wins, outsourced wafer availability, and customer concentration."},
+    {"term": "Foundry", "definition": "A manufacturer that fabricates wafers for external customers; some firms also design their own products.", "signal": "Track capacity and utilization by node, customer, yield, and wafer pricing."},
+    {"term": "IDM", "definition": "An integrated device manufacturer that designs and manufactures some of its own chips.", "signal": "Separate internal manufacturing economics from any external foundry business."},
+    {"term": "OSAT", "definition": "Outsourced semiconductor assembly and test provider.", "signal": "Track packaging mix, test capacity, substrate access, and qualification."},
+    {"term": "Wafer start", "definition": "A wafer entering a fabrication process; it is not yet a completed wafer or shippable chip.", "signal": "Compare starts with cycle time, yield, and completed-unit demand."},
+    {"term": "Yield", "definition": "The proportion of process output meeting required specifications; definitions vary by stage and product.", "signal": "Yield improvements can increase saleable output without an equivalent increase in wafer starts."},
+    {"term": "HBM", "definition": "High-bandwidth memory built from vertically stacked DRAM dies and integrated with advanced packaging.", "signal": "Check product-specific supply, qualification, yields, and packaging capacity."},
+    {"term": "EUV", "definition": "Extreme ultraviolet lithography used for selected advanced patterning steps.", "signal": "Tool delivery, installation, qualification, and productive utilization are separate milestones."},
+    {"term": "Book-to-bill", "definition": "A ratio of orders received to products billed over a stated period; industry definitions and coverage matter.", "signal": "Read the source's period, geography, product scope, and revisions."},
+    {"term": "Channel inventory", "definition": "Inventory held by distributors and sometimes downstream customers, distinct from supplier inventory.", "signal": "Use company-specific definitions and days-of-inventory context; do not aggregate incompatible scopes."},
+    {"term": "Sell-in / sell-through", "definition": "Sell-in is supplier shipment into a channel; sell-through is a channel's sale to the next buyer or end user.", "signal": "A gap can indicate channel build or drawdown rather than end-demand acceleration."},
+    {"term": "Advanced packaging", "definition": "Packaging approaches that combine dies or connect them with dense interconnects, including chiplets and 2.5D/3D integration.", "signal": "Map each claimed constraint to a specific package, supplier, qualification, and date."}
+  ]
+}

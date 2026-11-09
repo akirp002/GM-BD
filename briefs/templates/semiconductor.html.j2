@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Semiconductor Brief — {{ as_of }}</title>
+<meta name="description" content="Semiconductor synthesis, sub-industry performance and linkages, rates and credit for {{ as_of }}.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --bg:#0d1117;--panel:#141a23;--inset:#0a0e13;--line:#232b36;--soft-line:#1a212b;
+    --ink:#e8e9ea;--soft:#9aa4b2;--faint:#737d8b;--accent:#d1a054;--up:#4fae7d;--down:#e0665a;
+    --neg-rgb:57,135,229;--pos-rgb:209,160,84;
+    --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--s6:#008300;--s7:#9085e9;--s8:#e66767;
+    --serif:'Source Serif 4',Georgia,serif;--mono:'IBM Plex Mono',ui-monospace,monospace;
+    --sans:Inter,-apple-system,'Segoe UI',sans-serif;
+  }
+  :root[data-theme="light"]{
+    --bg:#f7f6f2;--panel:#fff;--inset:#efeee8;--line:#ded9cc;--soft-line:#e8e4d9;
+    --ink:#221f1a;--soft:#5c574c;--faint:#8b8575;--accent:#a9721f;--up:#1c7a4d;--down:#b8382d;
+    --neg-rgb:42,120,214;--pos-rgb:169,114,31;
+    --s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4;--s6:#008300;--s7:#6250d6;--s8:#e34948;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 var(--sans)}
+  a{color:var(--accent)}
+  .wrap{max-width:1320px;margin:auto;padding:0 22px 72px}
+  .masthead{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+  .mast-inner{max-width:1320px;margin:auto;padding:13px 22px}
+  .mast-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 18px}
+  h1{font:600 clamp(24px,3vw,34px)/1.2 var(--serif);margin:0}
+  .stamp{font:11px var(--mono);letter-spacing:.04em;color:var(--faint)}
+  .controls{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
+  .controls input[type=search]{flex:1;min-width:180px;max-width:480px;background:var(--inset);border:1px solid var(--line);border-radius:5px;color:var(--ink);padding:8px 10px;font:13px var(--sans)}
+  button,select{background:transparent;border:1px solid var(--line);border-radius:5px;color:var(--soft);padding:7px 10px;cursor:pointer;font:11px var(--mono);text-transform:uppercase}
+  select{background:var(--inset);text-transform:none}
+  button:hover,select:hover{border-color:var(--accent);color:var(--accent)}
+  button.on,button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--inset)}
+  nav{display:flex;gap:3px;overflow-x:auto;padding:8px 0 0;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+  nav a{white-space:nowrap;color:var(--soft);text-decoration:none;padding:6px 9px;border-radius:4px;font:10px var(--mono);letter-spacing:.05em;text-transform:uppercase}
+  nav a:hover{background:var(--inset);color:var(--accent)}
+  section{padding-top:30px;scroll-margin-top:135px}
+  h2{font:600 11px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--line);padding-bottom:10px;margin:0 0 14px}
+  h3{font:600 19px/1.3 var(--serif);margin:0 0 8px}
+  h4{font:600 15px/1.35 var(--serif);margin:0 0 5px}
+  p{margin:7px 0;color:var(--soft)}
+  .lede{max-width:82ch;margin:22px 0;color:var(--soft)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:5px;overflow:hidden}
+  .card{background:var(--panel);padding:16px}
+  .card .eyebrow,.tag{font:10px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+  .stat{font:600 24px var(--mono);margin:8px 0 1px}
+  .muted,.source-note{font-size:12px;color:var(--faint)}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  .scroll{overflow-x:auto;border:1px solid var(--line);border-radius:5px}
+  table{width:100%;border-collapse:collapse;min-width:780px;font:12px var(--mono)}
+  th{text-align:left;background:var(--inset);font:600 10px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+  th,td{padding:9px 11px;border-bottom:1px solid var(--soft-line);white-space:nowrap}
+  tr:last-child td{border-bottom:0}
+  td.name{font:600 12px var(--sans)}
+  .positive{color:var(--up)}.negative{color:var(--down)}
+  .news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:5px;overflow:hidden}
+  .headline{background:var(--panel);padding:13px 15px}
+  .headline:hover,.card:hover{background:var(--inset)}
+  .headline h4 a{color:var(--ink);text-decoration:none}
+  .headline h4 a:hover{color:var(--accent);text-decoration:underline}
+  .headline-meta{display:flex;justify-content:space-between;gap:10px;font:10px var(--mono);color:var(--faint);margin-bottom:7px}
+  .headline p{font-size:12px;line-height:1.45}
+  .group{margin:22px 0}
+  .group-head{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-bottom:8px}
+  .group-head h3{font-size:17px}
+  .row{padding:13px 0;border-bottom:1px solid var(--soft-line)}
+  .row:last-child{border-bottom:0}
+  .row p{font-size:13px}
+  .bullets{padding-left:19px;color:var(--soft);font-size:12.5px}
+  .bullets li{margin:4px 0}
+  .warning{background:var(--inset);border-left:3px solid var(--accent);padding:11px 14px;margin:12px 0;color:var(--soft);font-size:12px}
+  .errors{border-left-color:var(--down)}
+  .empty{color:var(--faint);font-style:italic}
+  footer{margin-top:42px;border-top:1px solid var(--line);padding-top:14px;color:var(--faint);font-size:11px}
+
+  /* synthesis */
+  .bottom-line{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:5px;padding:18px 22px;margin:0 0 18px}
+  .bottom-line p{font:400 17px/1.55 var(--serif);color:var(--ink);margin:0;max-width:96ch}
+  .tabs{display:flex;gap:6px;margin:0 0 12px;flex-wrap:wrap}
+  .tab-panel[hidden]{display:none}
+  .horizon{background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:16px 20px}
+  .horizon h3{margin-bottom:6px}
+  .theme{background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:18px 20px;margin:14px 0}
+  .theme-head{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
+  .pill{font:10px var(--mono);letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line);border-radius:10px;padding:2px 8px;color:var(--soft)}
+  .pill.high{border-color:var(--up);color:var(--up)}.pill.low{border-color:var(--down);color:var(--down)}.pill.medium{border-color:var(--accent);color:var(--accent)}
+  .theme p{font-size:13.5px;color:var(--soft);max-width:110ch}
+  .theme p strong,.horizon p strong{color:var(--ink)}
+  .evidence{margin:8px 0;padding:0;list-style:none;font-size:12.5px}
+  .evidence li{padding:8px 10px;border:1px solid var(--soft-line);border-radius:4px;margin:5px 0;background:var(--inset);color:var(--soft)}
+  .evidence .data{display:block;font:11px var(--mono);color:var(--faint);margin-top:3px}
+  .cites{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+  .cite{font:10px var(--mono);border:1px solid var(--line);border-radius:3px;padding:2px 6px;color:var(--faint);text-decoration:none;white-space:nowrap;max-width:300px;overflow:hidden;text-overflow:ellipsis}
+  a.cite:hover{border-color:var(--accent);color:var(--accent)}
+  .cols3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+
+  /* dashboard */
+  .toolbar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:0 0 12px}
+  .toolbar .label{font:10px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+  .seg-group{display:flex;gap:4px;flex-wrap:wrap}
+  .chips{display:flex;gap:5px;flex-wrap:wrap;margin:6px 0}
+  .chip{display:inline-flex;align-items:center;gap:6px;font:11px var(--sans);text-transform:none;padding:4px 9px;border-radius:12px}
+  .chip i{width:10px;height:10px;border-radius:50%;display:inline-block;background:var(--faint)}
+  .chip:not(.on) i{background:transparent;border:1px solid var(--faint)}
+  .chart-box{background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:12px 14px;position:relative}
+  .chart-box svg{width:100%;display:block;overflow:visible}
+  .chart-title{font:600 12px var(--sans);color:var(--ink);margin:0 0 4px;display:flex;justify-content:space-between;gap:10px}
+  .chart-title span{font:11px var(--mono);color:var(--faint)}
+  .axis text{font:10px var(--mono);fill:var(--faint)}
+  .grid-line{stroke:var(--soft-line);stroke-width:1}
+  .base-line{stroke:var(--line);stroke-width:1;stroke-dasharray:3 3}
+  .tip{position:absolute;pointer-events:none;background:var(--inset);border:1px solid var(--line);border-radius:5px;padding:7px 10px;font:11px var(--mono);color:var(--ink);z-index:3;display:none;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+  .tip b{display:block;color:var(--faint);font-weight:500;margin-bottom:3px}
+  .tip i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+  .legend{display:flex;gap:12px;flex-wrap:wrap;font:11px var(--sans);color:var(--soft);margin:2px 0 6px}
+  .legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+  .barcell{position:relative;min-width:210px;white-space:nowrap}
+  .bar{height:10px;border-radius:2px;display:inline-block;vertical-align:middle}
+  .bar.p{background:var(--up)}.bar.n{background:var(--down)}
+  tr.pick{cursor:pointer}tr.pick:hover td{background:var(--inset)}
+  .heat{border-collapse:collapse;min-width:0;width:auto;font:11px var(--mono)}
+  .heat th{writing-mode:vertical-rl;transform:rotate(180deg);padding:6px 4px;white-space:nowrap;max-height:150px;vertical-align:bottom;text-align:left}
+  .heat td{width:46px;min-width:46px;height:34px;text-align:center;padding:0;border:1px solid var(--bg)}
+  .heat td.rowh{width:auto;text-align:right;padding:0 8px;font:600 11px var(--sans);color:var(--soft);border:0;background:transparent}
+  .small-multiples{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:12px}.small-multiples>.chart-box{min-width:0;overflow:hidden}.chart-box svg{height:auto}
+  .insight{font-size:13px;color:var(--soft);margin:10px 0}
+  .insight strong{color:var(--ink)}
+  .drawer{position:fixed;right:0;top:0;bottom:0;width:min(340px,92vw);background:var(--panel);border-left:1px solid var(--line);z-index:20;padding:20px;overflow:auto;transform:translateX(100%);transition:transform .2s}
+  .drawer.open{transform:none}
+  .drawer label{display:flex;gap:8px;align-items:center;padding:6px 0;font-size:13px;color:var(--soft);cursor:pointer}
+  .drawer h3{font-size:16px}
+  section[hidden]{display:none}
+  @media(max-width:760px){.wrap{padding:0 14px 50px}.mast-inner{padding:12px 14px}.two-col{grid-template-columns:1fr}section{scroll-margin-top:160px}.small-multiples{grid-template-columns:1fr}}
+  @media (prefers-reduced-motion:reduce){.drawer{transition:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header class="masthead">
+  <div class="mast-inner">
+    <div class="mast-row">
+      <h1>{{ knowledge.title }}</h1>
+      <span class="stamp">AS OF {{ as_of }}{% if market.as_of %} · MARKET DATA {{ market.as_of }}{% endif %}{% if research.model %} · SYNTHESIS {{ research.model }}{% endif %}</span>
+    </div>
+    <div class="controls">
+      <input id="filter" type="search" placeholder="Filter headlines, concepts, and research notes" aria-label="Filter">
+      <button id="customize" type="button">Customize</button>
+      <button id="theme" type="button">Theme</button>
+    </div>
+    <nav aria-label="Page sections">
+      <a href="#synthesis">Synthesis</a><a href="#segments">Sub-industries</a><a href="#linkages">Linkages</a>
+      <a href="#ratescredit">Rates &amp; credit</a><a href="#tape">Tape</a><a href="#news">News</a>
+      <a href="#research">Research</a><a href="#industry">Value chain</a>
+      <a href="#mechanics">Mechanics</a><a href="#glossary">Glossary</a><a href="#sources">Sources</a>
+    </nav>
+  </div>
+</header>
+
+<aside class="drawer" id="drawer" aria-label="Customize dashboard" aria-hidden="true">
+  <h3>Customize</h3>
+  <p class="muted">Choose which sections to show. Preferences, chart selections and ranges are remembered in this browser.</p>
+  <div id="section-toggles"></div>
+  <p><button id="reset-prefs" type="button">Reset to defaults</button> <button id="close-drawer" type="button">Close</button></p>
+</aside>
+
+<main class="wrap">
+  <p class="lede">{{ knowledge.description }} Headlines are feed leads; every citation below links to the dated source and should be verified in primary documents before it is treated as fact.</p>
+
+  {% if fetch_errors %}
+  <div class="warning errors"><strong>Fetch issues:</strong><ul class="bullets">{% for error in fetch_errors %}<li>{{ error }}</li>{% endfor %}</ul></div>
+  {% endif %}
+
+  <section id="synthesis" data-title="Synthesis">
+    <h2>Synthesis · what the evidence adds up to</h2>
+    {% if research.bottom_line %}
+    <div class="bottom-line" data-searchable><span class="tag">Bottom line</span><p>{{ research.bottom_line }}</p></div>
+
+    <div class="tabs" role="tablist" aria-label="Time horizon">
+      {% for key, label in [("week","Last week"),("month","Last month"),("quarter","Last quarter")] %}
+      <button type="button" role="tab" data-tab="{{ key }}" aria-pressed="{{ 'true' if loop.first else 'false' }}">{{ label }}</button>
+      {% endfor %}
+    </div>
+    {% for key in ["week","month","quarter"] %}{% set h = research.horizons.get(key) %}{% if h %}
+    <div class="tab-panel horizon" data-panel="{{ key }}" data-searchable{% if not loop.first %} hidden{% endif %}>
+      <h3>{{ h.headline }}</h3>
+      <p>{{ h.synthesis }}</p>
+      {% if h.what_changed %}<strong class="muted">What changed vs the longer window</strong><ul class="bullets">{% for c in h.what_changed %}<li>{{ c }}</li>{% endfor %}</ul>{% endif %}
+      {% if h.cited %}<div class="cites">{% for c in h.cited %}{% if c.safe_link %}<a class="cite" href="{{ c.safe_link }}" target="_blank" rel="noopener noreferrer" title="{{ c.title }}">{{ c.source }} · {{ (c.published or '')[:10] }}</a>{% else %}<span class="cite">{{ c.source }}</span>{% endif %}{% endfor %}</div>{% endif %}
+    </div>
+    {% endif %}{% endfor %}
+
+    <h3 style="margin-top:26px">Themes</h3>
+    {% for theme in research.themes %}
+    <article class="theme" data-searchable>
+      <div class="theme-head"><span class="pill {{ theme.confidence }}">{{ theme.confidence }} confidence</span><span class="pill">{{ theme.horizon }}</span></div>
+      <h3>{{ theme.title }}</h3>
+      <p>{{ theme.thesis }}</p>
+      {% if theme.evidence %}<strong class="muted">Evidence</strong>
+      <ul class="evidence">{% for ev in theme.evidence %}<li>{{ ev.claim }}{% if ev.data %}<span class="data">{{ ev.data }}</span>{% endif %}
+        {% if ev.cited %}<div class="cites">{% for c in ev.cited %}{% if c.safe_link %}<a class="cite" href="{{ c.safe_link }}" target="_blank" rel="noopener noreferrer" title="{{ c.title }}">{{ c.source }} · {{ (c.published or '')[:10] }}</a>{% else %}<span class="cite">{{ c.source }}</span>{% endif %}{% endfor %}</div>{% endif %}</li>{% endfor %}</ul>{% endif %}
+      <div class="cols3">
+        <div><strong class="muted">Strongest counter-evidence</strong><p>{{ theme.counter_evidence }}</p></div>
+        <div><strong class="muted">Rates / credit / cross-asset</strong><p>{{ theme.cross_asset }}</p></div>
+        <div><strong class="muted">Implication</strong><p>{{ theme.implication }}</p></div>
+      </div>
+      <strong class="muted">What would prove this wrong</strong>
+      <ul class="bullets">{% for f in theme.falsifiers %}<li>{{ f }}</li>{% endfor %}</ul>
+      <p class="muted"><strong>Versus prior view:</strong> {{ theme.change_vs_prior }}</p>
+    </article>
+    {% endfor %}
+    {% if research.open_questions %}
+    <h3>Open questions the evidence can't yet answer</h3>
+    <ul class="bullets">{% for q in research.open_questions %}<li data-searchable>{{ q }}</li>{% endfor %}</ul>
+    {% endif %}
+    {% if research.validation_warnings %}
+    <div class="warning errors"><strong>Synthesis validation warnings:</strong><ul class="bullets">{% for w in research.validation_warnings %}<li>{{ w }}</li>{% endfor %}</ul></div>
+    {% endif %}
+    {% else %}
+    <p class="empty">No synthesis yet. Run <code>python3 briefs/scripts/synthesize_semiconductor.py {{ as_of }}</code> (API key) or <code>--packet-only</code> to synthesize in a Claude Code session, then rebuild with <code>--render-only</code>.</p>
+    {% endif %}
+  </section>
+
+  <section id="segments" data-title="Sub-industries">
+    <h2>Sub-industries · performance and custom baskets</h2>
+    <div class="toolbar">
+      <span class="label">Rank by</span>
+      <div class="seg-group" id="h-picker"></div>
+      <span class="muted">Equal-weighted segment indexes; click a row to add or remove it from the chart.</span>
+    </div>
+    <div class="scroll"><table id="seg-table"></table></div>
+    <p class="source-note">Segment = daily-rebalanced equal-weight average of members' price returns (Yahoo Finance adjusted close). Beta and relative strength are versus SOXX (cap-weighted). Equal-weight vs cap-weight gaps are informative in themselves. Korean listings are forward-filled across exchange holidays.</p>
+
+    <h3 style="margin-top:26px">Build your own comparison</h3>
+    <div class="toolbar">
+      <span class="label">Range</span><div class="seg-group" id="r-picker"></div>
+      <span class="label">Add stock</span><select id="add-stock" aria-label="Add stock"></select>
+      <button type="button" id="clear-basket">Clear</button>
+      <button type="button" id="make-basket" title="Equal-weight average of the individual stocks currently selected">+ Basket from selected stocks</button>
+    </div>
+    <div class="chips" id="entity-chips" aria-label="Series to chart"></div>
+    <div class="chart-box" id="perf-chart"><div class="chart-title">Indexed performance (start of range = 100)<span id="perf-note"></span></div><div class="legend" id="perf-legend"></div><svg></svg><div class="tip"></div></div>
+  </section>
+
+  <section id="linkages" data-title="Linkages">
+    <h2>Linkages · how the sub-industries move together</h2>
+    {% if research.industry_linkages %}
+    <div class="cols3">{% for link in research.industry_linkages %}
+      <article class="card" data-searchable><div class="eyebrow">Read-through</div><h4>{{ link.title }}</h4><p>{{ link.read }}</p>
+      {% if link.cited %}<div class="cites">{% for c in link.cited %}{% if c.safe_link %}<a class="cite" href="{{ c.safe_link }}" target="_blank" rel="noopener noreferrer" title="{{ c.title }}">{{ c.source }}</a>{% endif %}{% endfor %}</div>{% endif %}</article>
+    {% endfor %}</div>
+    {% endif %}
+    <div class="toolbar" style="margin-top:18px">
+      <span class="label">Matrix of</span>
+      <select id="corr-set" aria-label="Matrix universe"><option value="segments">Sub-industries</option><option value="plus">Sub-industries + ETFs + SPY/QQQ</option><option value="stocks">All stocks</option><option value="basket">My chart selection</option></select>
+      <span class="label">Window</span><div class="seg-group" id="w-picker"></div>
+      <span class="label">Show</span><div class="seg-group" id="m-picker"></div>
+    </div>
+    <div class="scroll" style="padding:10px"><table class="heat" id="corr-table"></table></div>
+    <p class="insight" id="corr-insight"></p>
+    <p class="source-note">Pearson correlation of daily returns. 'Change' = latest window minus the immediately preceding window of equal length; rising correlation means one common factor is driving the group, falling means idiosyncratic drivers. Correlation is not causation and is unstable in selloffs.</p>
+  </section>
+
+  <section id="ratescredit" data-title="Rates & credit">
+    <h2>Rates, credit spreads and default context</h2>
+    {% if research.rates_credit %}
+    <div class="two-col">
+      <article class="card" data-searchable><div class="eyebrow">Read</div><p>{{ research.rates_credit.read }}</p></article>
+      <article class="card" data-searchable><div class="eyebrow">Link to semiconductors</div><p>{{ research.rates_credit.semis_link }}</p>
+        {% if research.rates_credit.unknowns %}<strong class="muted">Not known</strong><ul class="bullets">{% for u in research.rates_credit.unknowns %}<li>{{ u }}</li>{% endfor %}</ul>{% endif %}</article>
+    </div>
+    {% endif %}
+    <div class="scroll" style="margin-top:14px"><table id="macro-table"></table></div>
+    <p class="source-note">Yield, spread and VIX moves are FRED daily series; changes in bp (yields/OAS) or % (VIX, dollar). 1Y percentile = share of the past year's observations at or below the latest value.</p>
+
+    <h3 style="margin-top:26px">Where is the credit stress? Change in OAS by rating</h3>
+    <div class="toolbar"><span class="label">Horizon</span><div class="seg-group" id="oas-picker"></div></div>
+    <div class="chart-box" id="oas-chart"><svg></svg><div class="tip"></div></div>
+
+    <h3 style="margin-top:26px">Chart any series</h3>
+    <div class="toolbar">
+      <span class="label">Range</span><div class="seg-group" id="mr-picker"></div>
+      <span class="label">View</span><div class="seg-group" id="mv-picker"></div>
+      <button type="button" id="overlay-soxx" aria-pressed="false">Include SOXX panel</button>
+    </div>
+    <div class="chips" id="macro-chips"></div>
+    <div class="small-multiples" id="macro-charts"></div>
+    <p class="source-note">One axis per panel (no dual axes). 'Change' view shows the move since the start of the selected range, in bp for yields and spreads.</p>
+
+    <h3 style="margin-top:26px">Default and credit-quality context</h3>
+    <div class="cols3" id="default-cards"></div>
+  </section>
+
+  <section id="tape" data-title="Market tape">
+    <h2>Semiconductor market tape</h2>
+    <p class="source-note">{{ market.measurement_note }}</p>
+    <div class="scroll"><table>
+      <thead><tr><th>Ticker</th><th>Company / instrument</th><th>Role</th><th>Price</th><th>As of</th><th>1D</th><th>1W</th><th>1M</th><th>3M</th><th>YTD</th><th>20D avg $ volume*</th></tr></thead>
+      <tbody>
+      {% for ticker, row in market.tickers.items() %}
+      <tr data-searchable>
+        <td>{{ ticker }}</td><td class="name">{{ row.name }}</td><td>{{ row.group }}</td><td>{{ row.price }}</td><td>{{ row.as_of }}</td>
+        {% for period in ["1D", "1W", "1M", "3M", "YTD"] %}
+        {% set value = row.returns_pct.get(period) %}
+        <td{% if value is not none %} class="{{ 'positive' if value > 0 else ('negative' if value < 0 else '') }}"{% endif %}>{% if value is not none %}{{ "%+.2f"|format(value) }}%{% else %}N/A{% endif %}</td>
+        {% endfor %}
+        <td>{% if row.avg_dollar_volume_20d is not none %}${{ "{:,.0f}".format(row.avg_dollar_volume_20d) }}{% else %}N/A{% endif %}</td>
+      </tr>
+      {% else %}<tr><td colspan="11">No market rows available. See the fetch-issues ledger.</td></tr>{% endfor %}
+      </tbody>
+    </table></div>
+    <p class="source-note">*Approximate price × average share volume, not fund flows or executable market depth. Weekend/holiday as-of dates may lag.</p>
+  </section>
+
+  <section id="news" data-title="News">
+    <h2>Semiconductor newsroom · {{ headline_count }} deduplicated leads</h2>
+    <div class="toolbar"><span class="label">Window</span><div class="seg-group" id="news-window">
+      <button type="button" data-w="week" aria-pressed="true">Last 7 days</button><button type="button" data-w="month" aria-pressed="false">8–30 days</button><button type="button" data-w="quarter" aria-pressed="false">31–95 days</button><button type="button" data-w="all" aria-pressed="false">All</button></div></div>
+    {% for desk in desks %}
+    <div class="group" data-searchable>
+      <div class="group-head"><h3>{{ desk.label }}</h3><span class="muted">{{ desk.headlines|length }} leads</span></div>
+      {% if desk.headlines %}
+      <div class="news-grid">
+        {% for item in desk.headlines %}
+        <article class="headline" data-searchable data-window="{{ item.window or 'week' }}"{% if (item.window or 'week') != 'week' %} hidden{% endif %}>
+          <div class="headline-meta"><span>{{ item.source }} · <span title="Citation id used by the synthesis">{{ item.id }}</span></span><time>{{ item.published or "date not supplied" }}</time></div>
+          <h4>{% if item.safe_link %}<a href="{{ item.safe_link }}" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>{% else %}{{ item.title }}{% endif %}</h4>
+          {% if item.summary %}<p>{{ item.summary }}</p>{% endif %}
+        </article>
+        {% endfor %}
+      </div>
+      {% else %}<p class="empty">No headlines returned for this desk in the current pull.</p>{% endif %}
+    </div>
+    {% endfor %}
+  </section>
+
+  <section id="research" data-title="Research notes">
+    <h2>Researched developments &amp; watchlist</h2>
+    {% for story in research.top_stories %}
+    <article class="row" data-searchable>
+      <span class="tag">Verified development</span><h3>{{ story.title }}</h3>
+      {% if story.fact %}<p><strong>Reported:</strong> {{ story.fact }}</p>{% endif %}
+      {% if story.analysis %}<p><strong>Attributed analysis:</strong> {{ story.analysis }}</p>{% endif %}
+      {% if story.read %}<p><strong>Read:</strong> {{ story.read }}</p>{% endif %}
+      {% if story.sources %}<p class="source-note">Sources:
+        {% for source in story.sources %}{% if source.safe_url %}<a href="{{ source.safe_url }}" target="_blank" rel="noopener noreferrer">{{ source.label }}</a>{% else %}{{ source.label }}{% endif %}{% if source.published %} ({{ source.published }}){% endif %}{% if not loop.last %}; {% endif %}{% endfor %}
+      </p>{% endif %}
+    </article>
+    {% endfor %}
+    {% if research.learning_notes %}
+    <h3>New learning notes</h3>
+    {% for note in research.learning_notes %}<article class="row" data-searchable><h4>{{ note.concept }}</h4><p>{{ note.explanation }}</p>{% if note.safe_url %}<a href="{{ note.safe_url }}" target="_blank" rel="noopener noreferrer">{{ note.label or "Source" }}</a>{% endif %}</article>{% endfor %}
+    {% endif %}
+    <h3>Watchlist</h3>
+    <ul class="bullets">{% for item in research.watchlist %}
+      <li data-searchable><strong>{{ item.signal }}</strong> — {{ item.why }}{% if item.safe_url %} <a href="{{ item.safe_url }}" target="_blank" rel="noopener noreferrer">Source</a>{% endif %}</li>
+    {% else %}<li class="empty">No dated catalysts entered yet.</li>{% endfor %}</ul>
+  </section>
+
+  <section id="industry" data-title="Value chain">
+    <h2>Industry map · where economics accrue</h2>
+    <div class="grid">
+    {% for stage in knowledge.chain_stages %}
+      <article class="card" data-searchable>
+        <div class="eyebrow">{{ stage.name }}</div><p>{{ stage.description }}</p>
+        <p><strong>Economics:</strong> {{ stage.economics }}</p>
+        <ul class="bullets">{% for signal in stage.watch %}<li>{{ signal }}</li>{% endfor %}</ul>
+        <p class="muted"><strong>Risk:</strong> {{ stage.risk }}</p>
+      </article>
+    {% endfor %}
+    </div>
+  </section>
+
+  <section id="mechanics" data-title="Market mechanics">
+    <h2>Market mechanics · framework and falsifiers</h2>
+    <div class="two-col">
+    {% for mechanic in knowledge.market_mechanics %}
+      <article class="card" data-searchable>
+        <h3>{{ mechanic.name }}</h3><p>{{ mechanic.mechanism }}</p>
+        <strong class="muted">Signals to check</strong>
+        <ul class="bullets">{% for signal in mechanic.watch %}<li>{{ signal }}</li>{% endfor %}</ul>
+        <p class="muted"><strong>Do not infer:</strong> {{ mechanic.pitfall }}</p>
+      </article>
+    {% endfor %}
+    </div>
+  </section>
+
+  <section id="glossary" data-title="Glossary">
+    <h2>Learning desk · semiconductor glossary</h2>
+    <div class="grid">
+    {% for entry in knowledge.glossary %}
+      <article class="card" data-searchable><div class="eyebrow">{{ entry.term }}</div><p>{{ entry.definition }}</p><p class="muted"><strong>Why it matters:</strong> {{ entry.signal }}</p></article>
+    {% endfor %}
+    </div>
+  </section>
+
+  <section id="sources" data-title="Sources">
+    <h2>Source and methodology notes</h2>
+    <ul class="bullets">{% for source in knowledge.source_hierarchy %}<li>{{ source }}</li>{% endfor %}</ul>
+    {% for note in data_source_notes %}<p class="source-note">{{ note }}</p>{% endfor %}
+    {% for note in macro.notes %}<p class="source-note">{{ note }}</p>{% endfor %}
+    <p class="source-note">Generated {{ generated_at or "time unavailable" }}. The synthesis is model-written from a computed evidence packet; citations are restricted to ids in that packet, and its claims remain analysis, not fact.</p>
+  </section>
+  <footer>Independent semiconductor research aid. Not investment advice. Verify company, industry, and market claims against the dated source.</footer>
+</main>
+
+<script id="dash-data" type="application/json">{{ dashboard|tojson }}</script>
+<script>
+(function () {
+  'use strict';
+  var D = JSON.parse(document.getElementById('dash-data').textContent);
+  var A = D.analytics || {}, M = D.macro || {};
+  var PREFIX = 'semi-brief-';
+  function load(k, d) { try { var v = localStorage.getItem(PREFIX + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } }
+  function save(k, v) { try { localStorage.setItem(PREFIX + k, JSON.stringify(v)); } catch (e) {} }
+  function $(id) { return document.getElementById(id); }
+  function el(tag, attrs, html) { var e = document.createElement(tag); for (var k in (attrs || {})) e.setAttribute(k, attrs[k]); if (html != null) e.innerHTML = html; return e; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function fmt(v, d) { return v == null ? 'N/A' : (v > 0 ? '+' : '') + v.toFixed(d == null ? 1 : d); }
+  function cls(v) { return v == null ? '' : v > 0 ? 'positive' : v < 0 ? 'negative' : ''; }
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  function s(tag, attrs) { var e = document.createElementNS(SVGNS, tag); for (var k in (attrs || {})) e.setAttribute(k, attrs[k]); return e; }
+
+  /* ---- generic page chrome ---- */
+  var filter = $('filter');
+  filter.addEventListener('input', function () {
+    var q = filter.value.trim().toLowerCase();
+    document.querySelectorAll('[data-searchable]').forEach(function (n) { n.hidden = !!q && !n.textContent.toLowerCase().includes(q); });
+  });
+  $('theme').addEventListener('click', function () {
+    var r = document.documentElement, next = r.dataset.theme === 'light' ? 'dark' : 'light';
+    r.dataset.theme = next; save('theme', next); redrawAll();
+  });
+  var savedTheme = load('theme', null); if (savedTheme) document.documentElement.dataset.theme = savedTheme;
+
+  document.querySelectorAll('[data-tab]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('[data-tab]').forEach(function (x) { x.setAttribute('aria-pressed', x === b); });
+      document.querySelectorAll('[data-panel]').forEach(function (p) { p.hidden = p.dataset.panel !== b.dataset.tab; });
+      save('tab', b.dataset.tab);
+    });
+  });
+  var tabSaved = load('tab', null); if (tabSaved) { var tb = document.querySelector('[data-tab="' + tabSaved + '"]'); if (tb) tb.click(); }
+
+  /* news window */
+  function setNewsWindow(w) {
+    document.querySelectorAll('#news-window button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.w === w); });
+    document.querySelectorAll('.headline[data-window]').forEach(function (h) { h.hidden = !(w === 'all' || h.dataset.window === w); });
+    save('news-window', w);
+  }
+  document.querySelectorAll('#news-window button').forEach(function (b) { b.addEventListener('click', function () { setNewsWindow(b.dataset.w); }); });
+  setNewsWindow(load('news-window', 'week'));
+
+  /* section visibility */
+  var sections = Array.prototype.slice.call(document.querySelectorAll('section[data-title]'));
+  var hidden = load('hidden-sections', []);
+  function applySections() {
+    sections.forEach(function (sec) { sec.hidden = hidden.indexOf(sec.id) >= 0; });
+    document.querySelectorAll('nav a').forEach(function (a) { var id = a.getAttribute('href').slice(1); a.style.display = hidden.indexOf(id) >= 0 ? 'none' : ''; });
+  }
+  var tg = $('section-toggles');
+  sections.forEach(function (sec) {
+    var lab = el('label'), cb = el('input', {type: 'checkbox'});
+    cb.checked = hidden.indexOf(sec.id) < 0;
+    cb.addEventListener('change', function () {
+      hidden = hidden.filter(function (x) { return x !== sec.id; });
+      if (!cb.checked) hidden.push(sec.id);
+      save('hidden-sections', hidden); applySections(); redrawAll();
+    });
+    lab.appendChild(cb); lab.appendChild(document.createTextNode(sec.dataset.title)); tg.appendChild(lab);
+  });
+  applySections();
+  $('customize').addEventListener('click', function () { var d = $('drawer'); d.classList.toggle('open'); d.setAttribute('aria-hidden', !d.classList.contains('open')); });
+  $('close-drawer').addEventListener('click', function () { $('drawer').classList.remove('open'); });
+  $('reset-prefs').addEventListener('click', function () {
+    try { Object.keys(localStorage).filter(function (k) { return k.indexOf(PREFIX) === 0; }).forEach(function (k) { localStorage.removeItem(k); }); } catch (e) {}
+    location.reload();
+  });
+
+  if (!A.dates) { ['segments', 'linkages'].forEach(function (id) { var n = $(id); if (n) n.querySelector('.toolbar').insertAdjacentHTML('beforebegin', '<p class="empty">No market history in this data pull; rerun the builder without --render-only.</p>'); }); }
+
+  /* ---- series helpers ---- */
+  var COLORS = ['var(--s1)', 'var(--s2)', 'var(--s3)', 'var(--s4)', 'var(--s5)', 'var(--s6)', 'var(--s7)', 'var(--s8)'];
+  var colorOf = {}; // entity -> slot, sticky so filters never repaint survivors
+  function slot(id) {
+    if (colorOf[id] == null) { var used = {}; Object.keys(colorOf).forEach(function (k) { if (k !== id && (basket.indexOf(k) >= 0 || (k.indexOf('m:') === 0 && (window.__mSel || []).indexOf(k.slice(2)) >= 0))) used[colorOf[k]] = 1; }); var i = 0; while (used[i]) i++; colorOf[id] = i % COLORS.length; }
+    return COLORS[colorOf[id]];
+  }
+  var dates = A.dates || [], N = dates.length;
+  var segDefs = A.segment_defs || {};
+  var customBaskets = load('custom-baskets', {}); // id -> {label, tickers}
+  function label(id) {
+    if (segDefs[id]) return segDefs[id].label;
+    if (customBaskets[id]) return customBaskets[id].label;
+    return (A.names && A.names[id]) || id;
+  }
+  function members(id) { return segDefs[id] ? segDefs[id].tickers : customBaskets[id] ? customBaskets[id].tickers : null; }
+  var closeCache = {};
+  function closes(t) { return (A.series && A.series[t]) || []; }
+  function dailyRet(arr) { var r = []; for (var i = 0; i < arr.length; i++) { var a = arr[i - 1], b = arr[i]; r.push(i && a != null && b != null && a !== 0 ? b / a - 1 : null); } return r; }
+  var retCache = {};
+  /* index level (base 100 at first date) for any entity: ticker, segment or custom basket */
+  function entityReturns(id) {
+    if (retCache[id]) return retCache[id];
+    var ms = members(id), out;
+    if (ms) {
+      var rs = ms.map(function (t) { return dailyRet(closes(t)); });
+      out = dates.map(function (_, i) { var sum = 0, n = 0; rs.forEach(function (r) { if (r[i] != null) { sum += r[i]; n++; } }); return i && n ? sum / n : (i ? 0 : null); });
+    } else out = dailyRet(closes(id));
+    return (retCache[id] = out);
+  }
+  function entityLevel(id) {
+    var r = entityReturns(id), lv = [], cur = 100;
+    for (var i = 0; i < r.length; i++) { if (i === 0) { lv.push(100); continue; } if (r[i] != null) cur *= 1 + r[i]; lv.push(cur); }
+    return lv;
+  }
+  var RANGES = {'1M': 21, '3M': 63, '6M': 126, '1Y': 252};
+  function rangeStart(r) {
+    if (r === 'YTD') { var y = dates[N - 1].slice(0, 4), i = 0; while (i < N && dates[i].slice(0, 4) < y) i++; return Math.max(0, i - 1); }
+    return Math.max(0, N - 1 - (RANGES[r] || 252));
+  }
+
+  /* ---- chart engine ---- */
+  var tipTimers = {};
+  function niceTicks(lo, hi, n) {
+    var span = hi - lo || 1, step = Math.pow(10, Math.floor(Math.log10(span / n))), err = span / n / step;
+    step *= err >= 7 ? 10 : err >= 3 ? 5 : err >= 1.5 ? 2 : 1;
+    var a = Math.floor(lo / step) * step, out = [];
+    for (var v = a; v <= hi + step * .5; v += step) out.push(+v.toPrecision(10));
+    return out;
+  }
+  /* series: [{id,label,color,pts:[[tMs,v]...]}] */
+  function lineChart(box, series, o) {
+    o = o || {};
+    var svg = box.querySelector('svg'), tip = box.querySelector('.tip');
+    var W = Math.max(280, box.clientWidth - 28), H = o.height || 300, pl = 46, pr = 14, pt = 8, pb = 24;
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H); svg.setAttribute('height', H); svg.innerHTML = '';
+    var all = []; series.forEach(function (x) { x.pts.forEach(function (p) { if (p[1] != null) all.push(p); }); });
+    if (!all.length) { svg.appendChild(s('text', {x: 10, y: 24, fill: 'var(--faint)'})).textContent = 'No data for this selection'; return; }
+    var t0 = Math.min.apply(null, all.map(function (p) { return p[0]; })), t1 = Math.max.apply(null, all.map(function (p) { return p[0]; }));
+    var vs = all.map(function (p) { return p[1]; }), lo = Math.min.apply(null, vs), hi = Math.max.apply(null, vs);
+    if (o.base != null) { lo = Math.min(lo, o.base); hi = Math.max(hi, o.base); }
+    var pad = (hi - lo) * .06 || 1; lo -= pad; hi += pad;
+    var X = function (t) { return pl + (t - t0) / (t1 - t0 || 1) * (W - pl - pr); }, Y = function (v) { return pt + (hi - v) / (hi - lo) * (H - pt - pb); };
+    var g = s('g', {'class': 'axis'}); svg.appendChild(g);
+    niceTicks(lo, hi, 4).forEach(function (v) {
+      if (v < lo || v > hi) return;
+      g.appendChild(s('line', {x1: pl, x2: W - pr, y1: Y(v), y2: Y(v), 'class': 'grid-line'}));
+      var tx = s('text', {x: pl - 6, y: Y(v) + 3, 'text-anchor': 'end'}); tx.textContent = (o.yfmt || function (x) { return x; })(v); g.appendChild(tx);
+    });
+    var nx = W < 520 ? 2 : 4;
+    for (var k = 0; k <= nx; k++) {
+      var t = t0 + (t1 - t0) * k / nx, d = new Date(t).toISOString().slice(0, 10);
+      var tx2 = s('text', {x: X(t), y: H - 6, 'text-anchor': k === 0 ? 'start' : k === nx ? 'end' : 'middle'}); tx2.textContent = d; g.appendChild(tx2);
+    }
+    if (o.base != null) g.appendChild(s('line', {x1: pl, x2: W - pr, y1: Y(o.base), y2: Y(o.base), 'class': 'base-line'}));
+    series.forEach(function (x) {
+      var dstr = '', pen = false;
+      x.pts.forEach(function (p) { if (p[1] == null) { pen = false; return; } dstr += (pen ? 'L' : 'M') + X(p[0]).toFixed(1) + ' ' + Y(p[1]).toFixed(1); pen = true; });
+      svg.appendChild(s('path', {d: dstr, fill: 'none', stroke: x.color, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round'}));
+    });
+    var cross = s('line', {y1: pt, y2: H - pb, stroke: 'var(--faint)', 'stroke-width': 1, visibility: 'hidden'}); svg.appendChild(cross);
+    var dots = series.map(function (x) { var c = s('circle', {r: 4, fill: x.color, stroke: 'var(--panel)', 'stroke-width': 2, visibility: 'hidden'}); svg.appendChild(c); return c; });
+    var hit = s('rect', {x: pl, y: pt, width: W - pl - pr, height: H - pt - pb, fill: 'transparent'}); svg.appendChild(hit);
+    function atOrBefore(pts, t) { var lo2 = 0, hi2 = pts.length - 1, ans = -1; while (lo2 <= hi2) { var m = (lo2 + hi2) >> 1; if (pts[m][0] <= t) { ans = m; lo2 = m + 1; } else hi2 = m - 1; } return ans; }
+    hit.addEventListener('mousemove', function (ev) {
+      var r = svg.getBoundingClientRect(), px = (ev.clientX - r.left) * (W / r.width), t = t0 + (px - pl) / (W - pl - pr) * (t1 - t0);
+      var rows = '', first = null;
+      series.forEach(function (x, i) {
+        var j = atOrBefore(x.pts, t); if (j < 0 || x.pts[j][1] == null) { dots[i].setAttribute('visibility', 'hidden'); return; }
+        var p = x.pts[j]; first = first == null ? p[0] : first;
+        dots[i].setAttribute('cx', X(p[0])); dots[i].setAttribute('cy', Y(p[1])); dots[i].setAttribute('visibility', 'visible');
+        rows += '<div><i style="background:' + x.color + '"></i>' + esc(x.label) + ': <b style="display:inline;color:var(--ink)">' + (o.tfmt || o.yfmt || function (v) { return v.toFixed(2); })(p[1]) + '</b></div>';
+      });
+      if (first == null) return;
+      cross.setAttribute('x1', X(first)); cross.setAttribute('x2', X(first)); cross.setAttribute('visibility', 'visible');
+      tip.innerHTML = '<b>' + new Date(first).toISOString().slice(0, 10) + '</b>' + rows; tip.style.display = 'block';
+      var bx = box.getBoundingClientRect(); var left = ev.clientX - bx.left + 14; if (left + 200 > bx.width) left = ev.clientX - bx.left - 200;
+      tip.style.left = Math.max(4, left) + 'px'; tip.style.top = (ev.clientY - bx.top + 14) + 'px';
+    });
+    hit.addEventListener('mouseleave', function () { tip.style.display = 'none'; cross.setAttribute('visibility', 'hidden'); dots.forEach(function (d) { d.setAttribute('visibility', 'hidden'); }); });
+  }
+  function legend(node, series) { node.innerHTML = series.map(function (x) { return '<span><i style="background:' + x.color + '"></i>' + esc(x.label) + '</span>'; }).join(''); }
+  function btnGroup(node, opts, current, onPick) {
+    node.innerHTML = '';
+    opts.forEach(function (o) {
+      var v = Array.isArray(o) ? o[0] : o, t = Array.isArray(o) ? o[1] : o;
+      var b = el('button', {type: 'button', 'aria-pressed': String(v === current)}, esc(t));
+      b.addEventListener('click', function () { node.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', 'false'); }); b.setAttribute('aria-pressed', 'true'); onPick(v); });
+      node.appendChild(b);
+    });
+  }
+
+  /* ---- segments table + basket chart ---- */
+  var HZ = ['1W', '1M', '3M', '6M', 'YTD', '1Y'];
+  var hz = load('rank-horizon', '1M'), range = load('range', '3M');
+  var basket = load('basket', ['SOXX', 'ai_compute', 'memory', 'equipment', 'mobile_rf', 'SPY']);
+  var segs = A.segments || {};
+  basket = basket.filter(function (id) { return segDefs[id] || customBaskets[id] || (A.series && A.series[id]); });
+
+  function renderSegTable() {
+    var tbl = $('seg-table'); if (!tbl) return;
+    var ids = Object.keys(segs).sort(function (a, b) { return (segs[b].returns_pct[hz] == null ? -1e9 : segs[b].returns_pct[hz]) - (segs[a].returns_pct[hz] == null ? -1e9 : segs[a].returns_pct[hz]); });
+    var maxAbs = Math.max.apply(null, ids.map(function (i) { return Math.abs(segs[i].returns_pct[hz] || 0); }).concat([1]));
+    var head = '<thead><tr><th>Sub-industry</th><th>' + hz + ' return</th>' + HZ.map(function (h) { return '<th>' + h + '</th>'; }).join('') + '<th>vs SOXX (' + hz + ')</th><th>Beta 60d</th><th>From 52w high</th><th>Members</th></tr></thead>';
+    var rows = ids.map(function (id) {
+      var sg = segs[id], v = sg.returns_pct[hz], w = Math.abs(v || 0) / maxAbs * 100;
+      var rel = sg['vs_bench_' + hz];
+      return '<tr class="pick" data-id="' + id + '" title="Click to ' + (basket.indexOf(id) >= 0 ? 'remove from' : 'add to') + ' the chart"><td class="name">' + (basket.indexOf(id) >= 0 ? '● ' : '○ ') + esc(sg.label) + '</td>' +
+        '<td class="barcell"><span class="bar ' + (v >= 0 ? 'p' : 'n') + '" style="width:' + (w * 1.1).toFixed(0) + 'px"></span> <span class="' + cls(v) + '">' + fmt(v, 1) + '%</span></td>' +
+        HZ.map(function (h) { var x = sg.returns_pct[h]; return '<td class="' + cls(x) + '">' + fmt(x, 1) + '%</td>'; }).join('') +
+        '<td class="' + cls(rel) + '">' + fmt(rel, 1) + 'pp</td><td>' + (sg.beta == null ? 'N/A' : sg.beta.toFixed(2)) + '</td><td class="negative">' + fmt(sg.drawdown && sg.drawdown.from_52w_high_pct, 1) + '%</td><td class="muted" style="white-space:normal;min-width:180px">' + sg.members.map(function (t) { return esc(t.replace('.KS', '')); }).join(', ') + '</td></tr>';
+    }).join('');
+    tbl.innerHTML = head + '<tbody>' + rows + '</tbody>';
+    tbl.querySelectorAll('tr.pick').forEach(function (tr) { tr.addEventListener('click', function () { toggle(tr.dataset.id); }); });
+  }
+  function toggle(id) {
+    var i = basket.indexOf(id);
+    if (i >= 0) basket.splice(i, 1); else { if (basket.length >= 8) { $('perf-note').textContent = 'Max 8 series: remove one first'; return; } basket.push(id); }
+    save('basket', basket); renderBasket(); renderSegTable(); renderCorr();
+  }
+  function renderBasket() {
+    var chips = $('entity-chips'); if (!chips) return; chips.innerHTML = '';
+    var all = Object.keys(segDefs).concat(Object.keys(customBaskets), A.etfs || [], A.benchmarks || []);
+    basket.forEach(function (id) { if (all.indexOf(id) < 0) all.push(id); });
+    all.forEach(function (id) {
+      var on = basket.indexOf(id) >= 0;
+      var b = el('button', {type: 'button', 'class': 'chip' + (on ? ' on' : ''), 'aria-pressed': String(on)}, '<i style="' + (on ? 'background:' + slot(id) : '') + '"></i>' + esc(label(id)));
+      b.addEventListener('click', function () { toggle(id); }); chips.appendChild(b);
+    });
+    $('perf-note').textContent = '';
+    drawPerf();
+  }
+  function drawPerf() {
+    var box = $('perf-chart'); if (!box || !N) return;
+    var st = rangeStart(range);
+    var series = basket.map(function (id) {
+      var lv = entityLevel(id), base = lv[st];
+      return {id: id, label: label(id), color: slot(id), pts: dates.slice(st).map(function (d, i) { var v = lv[st + i]; return [Date.parse(d), v == null || !base ? null : v / base * 100]; })};
+    });
+    legend($('perf-legend'), series);
+    lineChart(box, series, {base: 100, yfmt: function (v) { return v.toFixed(0); }, tfmt: function (v) { return v.toFixed(1) + ' (' + fmt(v - 100, 1) + '%)'; }});
+  }
+  function initControls() {
+    btnGroup($('h-picker'), HZ, hz, function (v) { hz = v; save('rank-horizon', v); renderSegTable(); });
+    btnGroup($('r-picker'), ['1M', '3M', '6M', 'YTD', '1Y'], range, function (v) { range = v; save('range', v); drawPerf(); });
+    var sel = $('add-stock'); sel.innerHTML = '<option value="">Add a single stock…</option>';
+    Object.keys(segDefs).forEach(function (sid) {
+      var og = el('optgroup', {label: segDefs[sid].label});
+      segDefs[sid].tickers.forEach(function (t) { og.appendChild(el('option', {value: t}, esc(t.replace('.KS', '') + ' · ' + label(t)))); });
+      sel.appendChild(og);
+    });
+    sel.addEventListener('change', function () { if (sel.value && basket.indexOf(sel.value) < 0) toggle(sel.value); sel.value = ''; });
+    $('clear-basket').addEventListener('click', function () { basket = []; save('basket', basket); renderBasket(); renderSegTable(); renderCorr(); });
+    $('make-basket').addEventListener('click', function () {
+      var ts = basket.filter(function (id) { return !members(id) && (A.series[id]) && (A.etfs || []).concat(A.benchmarks || []).indexOf(id) < 0; });
+      if (ts.length < 2) { $('perf-note').textContent = 'Select at least two single stocks first'; return; }
+      var id = 'basket_' + ts.join('_'); customBaskets[id] = {label: 'Basket: ' + ts.map(function (t) { return t.replace('.KS', ''); }).join('+'), tickers: ts};
+      save('custom-baskets', customBaskets); retCache = {}; basket = basket.filter(function (x) { return ts.indexOf(x) < 0; }).concat([id]); save('basket', basket); renderBasket(); renderSegTable(); renderCorr();
+    });
+  }
+
+  /* ---- correlation explorer ---- */
+  var corrSet = load('corr-set', 'segments'), corrWin = load('corr-win', 60), corrMode = load('corr-mode', 'level');
+  function pearson(a, b, from, to) {
+    var n = 0, sa = 0, sb = 0, saa = 0, sbb = 0, sab = 0;
+    for (var i = from; i < to; i++) { var x = a[i], y = b[i]; if (x == null || y == null) continue; n++; sa += x; sb += y; saa += x * x; sbb += y * y; sab += x * y; }
+    if (n < 10) return null;
+    var cov = sab - sa * sb / n, va = saa - sa * sa / n, vb = sbb - sb * sb / n;
+    return va > 0 && vb > 0 ? cov / Math.sqrt(va * vb) : null;
+  }
+  function corrIds() {
+    if (corrSet === 'plus') return Object.keys(segDefs).concat(A.etfs || [], A.benchmarks || []);
+    if (corrSet === 'stocks') return [].concat.apply([], Object.keys(segDefs).map(function (k) { return segDefs[k].tickers; }));
+    if (corrSet === 'basket') return basket.slice();
+    return Object.keys(segDefs);
+  }
+  function heatBg(v, diverging) {
+    if (v == null) return 'transparent';
+    var a = Math.min(1, Math.abs(v) / (corrMode === 'change' ? 0.5 : 1)) * 0.85;
+    return 'rgba(' + (v >= 0 ? 'var(--pos-rgb)' : 'var(--neg-rgb)') + ',' + a.toFixed(2) + ')';
+  }
+  function renderCorr() {
+    var tbl = $('corr-table'); if (!tbl || !N) return;
+    var ids = corrIds(), w = corrWin;
+    if (ids.length < 2) { tbl.innerHTML = '<tr><td class="muted">Select at least two series in the chart above.</td></tr>'; $('corr-insight').textContent = ''; return; }
+    var rets = ids.map(entityReturns), pairs = [];
+    function val(i, j) {
+      var now = pearson(rets[i], rets[j], N - w, N);
+      if (corrMode === 'level') return now;
+      var prev = pearson(rets[i], rets[j], N - 2 * w, N - w);
+      return now == null || prev == null ? null : now - prev;
+    }
+    var head = '<tr><th></th>' + ids.map(function (id) { return '<th>' + esc(label(id).replace('.KS', '')) + '</th>'; }).join('') + '</tr>';
+    var rows = ids.map(function (a, i) {
+      return '<tr><td class="rowh">' + esc(label(a).replace('.KS', '')) + '</td>' + ids.map(function (b, j) {
+        var v = i === j ? null : val(i, j);
+        if (j > i) pairs.push({a: a, b: b, v: v});
+        var bg = i === j ? 'var(--inset)' : 'background:' + heatBg(v);
+        return '<td style="' + (i === j ? 'background:var(--inset)' : 'background:' + heatBg(v)) + '" title="' + esc(label(a) + ' / ' + label(b)) + ': ' + (v == null ? 'N/A' : v.toFixed(2)) + '">' + (i === j || v == null ? '' : (corrMode === 'change' ? fmt(v, 2) : v.toFixed(2))) + '</td>';
+      }).join('') + '</tr>';
+    }).join('');
+    tbl.innerHTML = '<thead>' + head + '</thead><tbody>' + rows + '</tbody>';
+    var ok = pairs.filter(function (p) { return p.v != null; }).sort(function (x, y) { return y.v - x.v; });
+    var avg = ok.length ? ok.reduce(function (t, p) { return t + p.v; }, 0) / ok.length : null;
+    var msg = '';
+    if (ok.length >= 2) {
+      var top = ok[0], bot = ok[ok.length - 1];
+      msg = corrMode === 'level'
+        ? '<strong>Average pairwise correlation ' + avg.toFixed(2) + '</strong> over ' + w + ' sessions. Most linked: ' + esc(label(top.a)) + ' / ' + esc(label(top.b)) + ' (' + top.v.toFixed(2) + '). Least linked: ' + esc(label(bot.a)) + ' / ' + esc(label(bot.b)) + ' (' + bot.v.toFixed(2) + ').'
+        : '<strong>Average change ' + fmt(avg, 2) + '</strong> vs the previous ' + w + ' sessions. Biggest rise: ' + esc(label(top.a)) + ' / ' + esc(label(top.b)) + ' (' + fmt(top.v, 2) + '); biggest fall: ' + esc(label(bot.a)) + ' / ' + esc(label(bot.b)) + ' (' + fmt(bot.v, 2) + ').';
+    }
+    $('corr-insight').innerHTML = msg;
+  }
+  function initCorr() {
+    $('corr-set').value = corrSet;
+    $('corr-set').addEventListener('change', function (e) { corrSet = e.target.value; save('corr-set', corrSet); renderCorr(); });
+    btnGroup($('w-picker'), [[20, '20d'], [60, '60d'], [120, '120d']], corrWin, function (v) { corrWin = v; save('corr-win', v); renderCorr(); });
+    btnGroup($('m-picker'), [['level', 'Correlation'], ['change', 'Change vs prior window']], corrMode, function (v) { corrMode = v; save('corr-mode', v); renderCorr(); });
+  }
+
+  /* ---- macro ---- */
+  var MS = M.series || {};
+  var mRange = load('m-range', '1Y'), mView = load('m-view', 'level'), mSel = load('m-sel', ['DGS10', 'DFII10', 'BAMLH0A0HYM2', 'BAMLH0A3HYC']), soxxPanel = load('m-soxx', true), oasHz = load('oas-hz', '3M');
+  mSel = mSel.filter(function (id) { return MS[id]; }); window.__mSel = mSel;
+  function unitFmt(id) { var u = MS[id].unit; return u === 'pct' || u === 'pct_level' ? function (v) { return v.toFixed(2) + '%'; } : function (v) { return v.toFixed(1); }; }
+  function chg(id, k) { var c = MS[id].change && MS[id].change[k]; return c == null ? null : c; }
+  function renderMacroTable() {
+    var tbl = $('macro-table'); if (!tbl) return;
+    var cols = ['1W', '1M', '3M', '6M', '1Y'], groups = {}, order = [];
+    Object.keys(MS).forEach(function (id) { var g = MS[id].group || (MS[id].unit === 'pct_level' ? 'Bank credit quality (quarterly)' : 'Other'); if (!groups[g]) { groups[g] = []; order.push(g); } groups[g].push(id); });
+    var h = '<thead><tr><th>Series</th><th>Latest</th>' + cols.map(function (c) { return '<th>Δ ' + c + '</th>'; }).join('') + '<th>1Y range · percentile</th><th>As of</th></tr></thead><tbody>';
+    order.forEach(function (g) {
+      h += '<tr><td colspan="9" style="background:var(--inset);color:var(--faint);font:600 10px var(--sans);letter-spacing:.08em;text-transform:uppercase">' + esc(g) + '</td></tr>';
+      groups[g].forEach(function (id) {
+        var m = MS[id], q = m.unit === 'pct_level', u = m.change_unit;
+        var cc = q ? ['1Q', '2Q', '1Y'] : cols;
+        var cells = (q ? ['1Q', '2Q', '1Y'] : cols).map(function (c) { var v = chg(id, c); return '<td class="' + (m.group === 'Credit spreads' || m.group === 'Risk' ? cls(v == null ? null : -v) : '') + '">' + (v == null ? 'N/A' : fmt(v, u === 'bp' ? 0 : 1) + u + (q ? ' (' + c + ')' : '')) + '</td>'; });
+        while (cells.length < 5) cells.push('<td></td>');
+        h += '<tr data-searchable><td class="name">' + esc(m.label) + '</td><td>' + unitFmt(id)(m.last) + '</td>' + cells.join('') + '<td>' + (m.range_1y ? m.range_1y[0] + ' – ' + m.range_1y[1] : 'N/A') + ' · P' + (m.percentile_1y == null ? '?' : m.percentile_1y) + '</td><td>' + m.as_of + '</td></tr>';
+      });
+    });
+    tbl.innerHTML = h + '</tbody>';
+  }
+  function renderOas() {
+    var box = $('oas-chart'); if (!box) return;
+    var ids = ['BAMLC0A0CM', 'BAMLC0A4CBBB', 'BAMLH0A0HYM2', 'BAMLH0A1HYBB', 'BAMLH0A2HYB', 'BAMLH0A3HYC'].filter(function (i) { return MS[i]; });
+    var svg = box.querySelector('svg'); svg.innerHTML = '';
+    if (!ids.length) { return; }
+    var vals = ids.map(function (i) { return chg(i, oasHz) || 0; }), mx = Math.max.apply(null, vals.map(Math.abs).concat([1]));
+    var W = Math.max(300, box.clientWidth - 28), rowH = 30, H = ids.length * rowH + 22, left = 160;
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H); svg.setAttribute('height', H);
+    ids.forEach(function (id, i) {
+      var v = vals[i], y = 6 + i * rowH, bw = Math.abs(v) / mx * (W - left - 110);
+      var t = s('text', {x: left - 10, y: y + 15, 'text-anchor': 'end', fill: 'var(--soft)', 'font-size': 12}); t.textContent = MS[id].label + ' (' + MS[id].last.toFixed(2) + '%)'; svg.appendChild(t);
+      var r = s('rect', {x: left, y: y + 3, width: Math.max(2, bw), height: 16, rx: 2, fill: v >= 0 ? 'var(--down)' : 'var(--up)'}); svg.appendChild(r);
+      var tt = s('text', {x: left + Math.max(2, bw) + 6, y: y + 16, fill: 'var(--ink)', 'font-size': 12, 'font-family': 'IBM Plex Mono, monospace'}); tt.textContent = fmt(v, 0) + ' bp'; svg.appendChild(tt);
+    });
+  }
+  function renderMacroCharts() {
+    var host = $('macro-charts'); if (!host) return; host.innerHTML = '';
+    var days = {'3M': 91, '6M': 182, '1Y': 365, '3Y': 1095, 'Max': 1e5};
+    var cutoff = Date.now() - days[mRange] * 864e5;
+    var panels = [];
+    if (soxxPanel && A.series && A.series.SOXX) {
+      var st = Math.max(0, N - 1 - (mRange === '3M' ? 63 : mRange === '6M' ? 126 : 252));
+      var base = A.series.SOXX[st];
+      panels.push({title: 'SOXX (indexed to 100)', base: 100, series: [{label: 'SOXX', color: 'var(--s1)', pts: dates.slice(st).map(function (d, i) { var v = A.series.SOXX[st + i]; return [Date.parse(d), v == null ? null : v / base * 100]; })}], yfmt: function (v) { return v.toFixed(0); }});
+    }
+    mSel.forEach(function (id) {
+      var m = MS[id], pts = m.history.filter(function (p) { return Date.parse(p[0]) >= cutoff; });
+      if (!pts.length) return;
+      var change = mView === 'change', b0 = pts[0][1], isBp = m.unit === 'pct' || m.unit === 'pct_level';
+      var data = pts.map(function (p) { return [Date.parse(p[0]), change ? (isBp ? (p[1] - b0) * (m.unit === 'pct' ? 100 : 1) : (p[1] / b0 - 1) * 100) : p[1]]; });
+      var suffix = change ? (m.unit === 'pct' ? ' bp' : m.unit === 'pct_level' ? ' pp' : '%') : (isBp ? '%' : '');
+      panels.push({title: m.label + (change ? ' · change since start' : ''), base: change ? 0 : null, series: [{label: m.label, color: slot('m:' + id), pts: data}], yfmt: function (v) { return (change ? fmt(v, m.unit === 'pct' ? 0 : 1) : v.toFixed(isBp ? 2 : 1)) + suffix; }});
+    });
+    var boxes = panels.map(function (p) {
+      var box = el('div', {'class': 'chart-box'}, '<div class="chart-title">' + esc(p.title) + '</div><svg></svg><div class="tip"></div>');
+      host.appendChild(box); return box;
+    });
+    panels.forEach(function (p, i) { lineChart(boxes[i], p.series, {height: 170, base: p.base, yfmt: p.yfmt}); });
+    if (!panels.length) host.innerHTML = '<p class="empty">Select one or more series above.</p>';
+  }
+  function renderMacroChips() {
+    var host = $('macro-chips'); if (!host) return; host.innerHTML = '';
+    Object.keys(MS).forEach(function (id) {
+      var on = mSel.indexOf(id) >= 0;
+      var b = el('button', {type: 'button', 'class': 'chip' + (on ? ' on' : ''), 'aria-pressed': String(on)}, '<i style="' + (on ? 'background:' + slot('m:' + id) : '') + '"></i>' + esc(MS[id].label));
+      b.addEventListener('click', function () { var i = mSel.indexOf(id); if (i >= 0) mSel.splice(i, 1); else mSel.push(id); save('m-sel', mSel); renderMacroChips(); renderMacroCharts(); });
+      host.appendChild(b);
+    });
+  }
+  function renderDefaults() {
+    var host = $('default-cards'); if (!host) return;
+    var h = '', imp = M.hy_implied_loss || {};
+    if (imp.hy_oas_pct != null) h += '<article class="card"><div class="eyebrow">Spread-implied loss (stress gauge)</div><div class="stat">' + imp.spread_implied_annual_loss_pct.toFixed(1) + '%</div><div class="muted">HY OAS ' + imp.hy_oas_pct.toFixed(2) + '% ÷ (1 − ' + (imp.assumed_recovery * 100).toFixed(0) + '% recovery)</div><p>' + esc(imp.note) + '</p></article>';
+    ['DRBLACBS', 'CORBLACBS', 'DRCCLACBS'].forEach(function (id) {
+      var m = MS[id]; if (!m) return;
+      h += '<article class="card"><div class="eyebrow">' + esc(m.label) + '</div><div class="stat">' + m.last.toFixed(2) + '%</div><div class="muted">As of ' + m.as_of + ' · 1Y percentile ' + m.percentile_1y + ' · ' + fmt(chg(id, '1Q'), 2) + 'pp vs prior quarter</div><p>Quarterly Federal Reserve loan-book series; lagging and not a bond default rate.</p></article>';
+    });
+    var man = M.manual_default_rates;
+    if (man && man.series) man.series.forEach(function (r) { h += '<article class="card"><div class="eyebrow">' + esc(r.label) + '</div><div class="stat">' + esc(r.value) + '</div><div class="muted">' + esc(r.source || '') + ' · as of ' + esc(r.as_of || '') + '</div></article>'; });
+    else h += '<article class="card"><div class="eyebrow">Rated-bond default rate</div><div class="stat">N/A</div><p>Moody\'s / S&amp;P / Fitch speculative-grade default rates are licensed. Add them to <code>briefs/semiconductors/default_rates.json</code> as <code>{"series":[{"label":"…","value":"…","source":"…","as_of":"…"}]}</code> to show them here.</p></article>';
+    host.innerHTML = h;
+  }
+  function initMacro() {
+    btnGroup($('mr-picker'), ['3M', '6M', '1Y', '3Y', 'Max'], mRange, function (v) { mRange = v; save('m-range', v); renderMacroCharts(); });
+    btnGroup($('mv-picker'), [['level', 'Level'], ['change', 'Change']], mView, function (v) { mView = v; save('m-view', v); renderMacroCharts(); });
+    btnGroup($('oas-picker'), ['1W', '1M', '3M', '6M', '1Y'], oasHz, function (v) { oasHz = v; save('oas-hz', v); renderOas(); });
+    var ob = $('overlay-soxx'); ob.setAttribute('aria-pressed', String(soxxPanel));
+    ob.addEventListener('click', function () { soxxPanel = !soxxPanel; ob.setAttribute('aria-pressed', String(soxxPanel)); save('m-soxx', soxxPanel); renderMacroCharts(); });
+  }
+
+  function redrawAll() { drawPerf(); renderMacroCharts(); renderOas(); }
+  var resizeTimer; window.addEventListener('resize', function () { clearTimeout(resizeTimer); resizeTimer = setTimeout(redrawAll, 150); });
+
+  if (N) { initControls(); renderSegTable(); renderBasket(); initCorr(); renderCorr(); }
+  if (Object.keys(MS).length) { initMacro(); renderMacroTable(); renderOas(); renderMacroChips(); renderMacroCharts(); renderDefaults(); }
+  else { var rc = $('ratescredit'); if (rc) rc.insertAdjacentHTML('beforeend', '<p class="empty">No FRED data in this pull (see the fetch-issues ledger).</p>'); }
+})();
+</script>
+</body>
+</html>
